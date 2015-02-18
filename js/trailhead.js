@@ -25,17 +25,17 @@ function startup() {
   var TOUCH = $('html').hasClass('touch');
   // Map generated in CfA Account
   var MAPBOX_MAP_ID = "codeforamerica.map-j35lxf9d";
-  var AKRON = {
-    lat: 41.082020,
-    lng: -81.518506
+  var CENTERPOINT = {
+    lat: 105.2519,
+    lng: 40.0274
   };
 
   // API_HOST: The API server. Here we assign a default server, then 
   // test to check whether we're using the Heroky dev app or the Heroku production app
   // and reassign API_HOST if necessary
   // var API_HOST = window.location.protocol + "//" + window.location.host;
-  //var API_HOST = "http://127.0.0.1:3000";
-  var API_HOST = "http://trailsy.herokuapp.com";
+  var API_HOST = "http://api.outerspatial.com/v0/";
+  // var API_HOST = "http://trailsy.herokuapp.com";
   // var API_HOST = "http://trailsyserver-dev.herokuapp.com";
   // var API_HOST = "http://trailsyserver-prod.herokuapp.com";
   // var API_HOST = "http://10.0.1.102:3000";
@@ -312,8 +312,8 @@ function startup() {
         return;
       }
       fetchTrailheads(currentUserLocation, function() { trailheadsFetched = true; });
-      fetchTraildata(function() { traildataFetched = true; });
-      fetchTrailsegments(function() { trailsegmentsFetched = true; });
+      fetchTraildata(currentUserLocation, function() { traildataFetched = true; });
+      fetchTrailsegments(currentUserLocation, function() { trailsegmentsFetched = true; });
       if (USE_LOCAL) {
         setTimeout(waitForTrailSegments, 0);
         setTimeout(waitForDataAndSegments, 0);
@@ -571,7 +571,7 @@ function startup() {
       // for now, just returns Akron
       // should use browser geolocation,
       // and only return Akron if we're far from home base
-      currentUserLocation = AKRON;
+      currentUserLocation = CENTERPOINT;
       showGeoOverlay();
       handleGeoError("no geolocation", callback);
     }
@@ -580,20 +580,20 @@ function startup() {
 
   function handleGeoSuccess(position, callback) {
     currentUserLocation = new L.LatLng(position.coords.latitude, position.coords.longitude);
-    var distanceToAkron = currentUserLocation.distanceTo(AKRON) / 1000;
+    var distanceToAkron = currentUserLocation.distanceTo(CENTERPOINT) / 1000;
     // if no map, set it up
     if (!map) {
       var startingMapLocation;
       var startingMapZoom;
       // if we're close to Akron, start the map and the trailhead distances from 
-      // the current location, otherwise just use AKRON for both
+      // the current location, otherwise just use CENTERPOINT for both
       if (distanceToAkron < LOCAL_LOCATION_THRESHOLD) {
         anchorLocation = currentUserLocation;
         startingMapLocation = currentUserLocation;
         startingMapZoom = 13;
       } else {
-        anchorLocation = AKRON;
-        startingMapLocation = AKRON;
+        anchorLocation = CENTERPOINT;
+        startingMapLocation = CENTERPOINT;
         startingMapZoom = 11;
       }
       map = createMap(startingMapLocation, startingMapZoom);
@@ -622,8 +622,8 @@ function startup() {
     console.log(error);
     if (!map) {
       console.log("making map anyway");
-      map = createMap(AKRON, 11);
-      currentUserLocation = AKRON;
+      map = createMap(CENTERPOINT, 11);
+      currentUserLocation = CENTERPOINT;
       if (error.code === 1) {
         showGeoOverlay();
       }
@@ -732,9 +732,8 @@ function startup() {
   function fetchTrailheads(location, callback) {
     console.log("fetchTrailheads");
     var callData = {
-      loc: location.lat + "," + location.lng,
       type: "GET",
-      path: "/trailheads.json?loc=" + location.lat + "," + location.lng
+      path: "trailheads?near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     makeAPICall(callData, function(response) {
       populateOriginalTrailheads(response);
@@ -750,12 +749,13 @@ function startup() {
   // populate trailheads[] with the each trailhead's stored properties, a Leaflet marker, 
   // and a place to put the trails for that trailhead.
 
-  function populateOriginalTrailheads(trailheadsGeoJSON) {
+  function populateOriginalTrailheads(trailheads) {
     console.log("populateOriginalTrailheads");
     originalTrailheads = [];
-    for (var i = 0; i < trailheadsGeoJSON.features.length; i++) {
-      var currentFeature = trailheadsGeoJSON.features[i];
-      var currentFeatureLatLng = new L.LatLng(currentFeature.geometry.coordinates[1], currentFeature.geometry.coordinates[0]);
+    for (var i = 0; i < trailheads.data.length; i++) {
+      var currentFeature = trailheads.data[i];
+      var coordinates = fetchTrailHeadCoordinates(currentFeature.id);
+      var currentFeatureLatLng = new L.LatLng(coordinates[1], coordinates[0]);
       // var newMarker = L.marker(currentFeatureLatLng, ({
       //   icon: trailheadIcon1
       // }));
@@ -765,8 +765,8 @@ function startup() {
         opacity: 0.8
       }).setRadius(MARKER_RADIUS);
       var trailhead = {
-        properties: currentFeature.properties,
-        geometry: currentFeature.geometry,
+        attributes: currentFeature.trailhead_attributes,
+        geometry: currentFeatureLatLng,
         marker: newMarker,
         trails: [],
         popupContent: ""
@@ -776,13 +776,23 @@ function startup() {
     }
   }
 
+  function fetchTrailHeadCoordinates(trailhead_id) {
+    var callData = {
+      type: "GET",
+      path: "trailheads/" + trailhead_id
+    };
+
+    var response = makeAPICallSync(callData);
+    return response.geometry.coordinates;
+  }
+
   function setTrailheadEventHandlers(trailhead) {
 
     trailhead.marker.on("click", function(trailheadID) {
       return function() {
         trailheadMarkerClick(trailheadID);
       };
-    }(trailhead.properties.id));
+    }(trailhead.id));
 
     // placeholders for possible trailhead marker hover behavior
     // trailhead.marker.on("mouseover", function(trailhead) {
@@ -810,11 +820,11 @@ function startup() {
 
   // get the trailData from the API
 
-  function fetchTraildata(callback) {
+  function fetchTraildata(location, callback) {
     console.log("fetchTraildata");
     var callData = {
       type: "GET",
-      path: "/trails.json"
+      path: "trails?near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     makeAPICall(callData, function(response) {
       populateTrailData(response);
@@ -825,17 +835,17 @@ function startup() {
   }
 
   function populateTrailData(trailDataGeoJSON) {
-    for (var i = 0; i < trailDataGeoJSON.features.length; i++) {
-      originalTrailData[trailDataGeoJSON.features[i].properties.id] = trailDataGeoJSON.features[i];
+    for (var i = 0; i < trailDataGeoJSON.data.length; i++) {
+      originalTrailData[trailDataGeoJSON.data[i].id] = trailDataGeoJSON.data[i];
     }
     currentTrailData = $.extend(true, {}, originalTrailData);
   }
 
-  function fetchTrailsegments(callback) {
+  function fetchTrailsegments(location, callback) {
     console.log("fetchTrailsegments");
     var callData = {
       type: "GET",
-      path: "/trailsegments.json"
+      path: "trail_segments?near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     // if (SMALL) {
     //   callData.path = "/trailsegments.json?simplify=" + ALL_SEGMENT_LAYER_SIMPLIFY;
@@ -2078,7 +2088,7 @@ function startup() {
           else {
             var callData = {
               type: "GET",
-              path: "/trailsegments.json?trail_id=" + trailID
+              path: "http:///trailsegments.json?trail_id=" + trailID
             };
             makeAPICall(callData, function(response) {
               featureCollection.features[0].properties = {
@@ -2321,10 +2331,12 @@ function startup() {
       callData.data = JSON.stringify(callData.data);
     }
     var url = API_HOST + callData.path;
+    // var url = callData.path;
     var request = $.ajax({
       type: callData.type,
       url: url,
       dataType: "json",
+      async: false,
       contentType: "application/json; charset=utf-8",
       //beforeSend: function(xhr) {
       //  xhr.setRequestHeader("Accept", "application/json")
@@ -2341,6 +2353,26 @@ function startup() {
       }
     });
   }
+
+  function makeAPICallSync(callData) {
+    console.log('makeAPICall: ' + callData.path);
+    if (!($.isEmptyObject(callData.data))) {
+      callData.data = JSON.stringify(callData.data);
+    }
+    var url = API_HOST + callData.path;
+    // var url = callData.path;
+    return JSON.parse($.ajax({
+      type: callData.type,
+      url: url,
+      dataType: "json",
+      async: false,
+      contentType: "application/json; charset=utf-8",
+      //beforeSend: function(xhr) {
+      //  xhr.setRequestHeader("Accept", "application/json")
+      //},
+      data: callData.data
+    }).responseText);
+  }  
 
   // get the outerHTML for a jQuery element
 
