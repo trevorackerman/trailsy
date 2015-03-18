@@ -26,8 +26,8 @@ function startup() {
   // Map generated in CfA Account
   var MAPBOX_MAP_ID = "codeforamerica.map-j35lxf9d";
   var CENTERPOINT = {
-    lat: 105.2519,
-    lng: 40.0274
+    lat: 40.0274,
+    lng: -105.2519,
   };
 
   // API_HOST: The API server. Here we assign a default server, then 
@@ -329,7 +329,7 @@ function startup() {
     // console.log("waitForTrailSegments");
     if (trailsegmentsFetched) {
       if (map.getZoom() >= SECONDARY_TRAIL_ZOOM && !(map.hasLayer(allSegmentLayer))) {
-        map.addLayer(allSegmentLayer).bringToBack();
+        map.addLayer(allSegmentLayer); //allSegmentLayer.addToBack() was here. This is a little suspicious.
       }
     }
     else {
@@ -733,7 +733,7 @@ function startup() {
     console.log("fetchTrailheads");
     var callData = {
       type: "GET",
-      path: "trailheads?opentrails=true&near_lat=" + location.lat + "&near_lng=" + location.lng
+      path: "trailheads.geojson?near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     makeAPICall(callData, function(response) {
       populateOriginalTrailheads(response);
@@ -833,7 +833,7 @@ function startup() {
     console.log("fetchTrailsegments");
     var callData = {
       type: "GET",
-      path: "trail_segments?opentrails=true&near_lat=" + location.lat + "&near_lng=" + location.lng
+      path: "trail_segments.geojson?near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     // if (SMALL) {
     //   callData.path = "/trailsegments.json?simplify=" + ALL_SEGMENT_LAYER_SIMPLIFY;
@@ -879,19 +879,19 @@ function startup() {
   }
   // returns true if trailname is in trailData
 
-  var trailNameLookup = null;
-  function trailnameInListOfTrails(trailname) {
+  // var trailNameLookup = null;
+  function trailnameInListOfTrails(trail_id) {
     // console.log("trailnameInListOfTrails");
-    if (trailNameLookup === null) {
-      trailNameLookup = {};
-      $.each(originalTrailData, function(key, value) {
-        var myTrailName = value.properties.name;
-        trailNameLookup[myTrailName] = true;
-      });
-    }
-
+    // if (trailNameLookup === null) {
+    //   trailNameLookup = {};
+    //   $.each(originalTrailData, function(key, value) {
+    //     var myTrailName = value.properties.name;
+    //     trailNameLookup[myTrailName] = true;
+    //   });
+    // }
     // console.log("trailnameInListOfTrails end");
-    return trailNameLookup[trailname];    
+    //return trailNameLookup[trailname];    
+    return originalTrailData[trail_id] ? true : false;
   }
 
   function segmentHasTrailWithMetadata(feature) {
@@ -961,27 +961,24 @@ function startup() {
   
       var popupHTML = "<div class='trail-popup'>";
       var atLeastOne = false;
-      for (var j = 1; j <= 6; j++) {
+      for (var j = 0; j < invisLayer.feature.properties["trail_ids"].length; j++) {
         // console.log("trailHTML start");
-
-        var trailField = "trail" + j;
-        if (invisLayer.feature.properties[trailField]) {
-          var trailPopupLineDiv;
-          if (trailnameInListOfTrails(invisLayer.feature.properties[trailField])) {
-            trailPopupLineDiv = "<div class='trail-popup-line trail-popup-line-named' " + 
-            "data-steward='" + invisLayer.feature.properties.steward + "' " + 
-            "data-source='" + invisLayer.feature.properties.source + "' " +
-            "data-trailname='" + invisLayer.feature.properties[trailField] + "'> " +
-            invisLayer.feature.properties[trailField] + 
-            "<b></b></div>";
-            atLeastOne = true;
-          } else {   
-            trailPopupLineDiv = "<div class='trail-popup-line trail-popup-line-unnamed'>" + 
-            invisLayer.feature.properties[trailField] + 
-            "</div>";
-          }
-          popupHTML = popupHTML + trailPopupLineDiv;
+        var trail_id = invisLayer.feature.properties["trail_ids"][j];
+        var trailPopupLineDiv;
+        if (trailnameInListOfTrails(trail_id)) {
+          var trail_name = originalTrailData[trail_id]          
+          trailPopupLineDiv = "<div class='trail-popup-line trail-popup-line-named' " + 
+          "data-steward='" + invisLayer.feature.properties.steward + "' " + 
+          "data-source='" + invisLayer.feature.properties.source + "' " +
+          "data-trailname='" + trail_name + "'> " + trail_id + 
+          "<b></b></div>";
+          atLeastOne = true;
+        } else {   
+          trailPopupLineDiv = "<div class='trail-popup-line trail-popup-line-unnamed'>" + 
+          trail_id + 
+          "</div>";
         }
+        popupHTML = popupHTML + trailPopupLineDiv;
         // console.log("trailHTML end");
 
       }
@@ -1123,28 +1120,33 @@ function startup() {
       var trailhead = myTrailheads[j];
       trailhead.trails = [];
       // for each original trailhead trail name
-      for (var trailNum = 1; trailNum <= 6; trailNum++) {
-        var trailWithNum = "trail" + trailNum;
-        if (trailhead.properties[trailWithNum] === "") {
-          continue;
-        }
-        var trailheadTrailName = trailhead.properties[trailWithNum];
+      for (var i = 0; i < trailhead.attributes.trail_ids.length; i++) {
         // TODO: add a test for the case of duplicate trail names.
         // Right now this
-        // loop through all of the trailData objects, looking for trail names that match
+        // loops through all of the trailData objects, looking for trail names that match
         // the trailhead trailname.
         // this works great, except for things like "Ledges Trail," which get added twice,
         // one for the CVNP instance and one for the MPSSC instance.
         // we should test for duplicate names and only use the nearest one.
         // to do that, we'll need to either query the DB for the trail segment info,
         // or check distance against the pre-loaded trail segment info
+        var trail_id = trailhead.attributes.trail_ids[i];
+        trail = myTrailData[trail_id];
+        if (trail != null || trail != undefined){
+
+          //TODO: invoke checkSegmentsForTrailname just like below. Look at filterResults.
+
+        }
+
+
         $.each(myTrailData, function(trailID, trail) {
           var wanted = false;
           var dataAvailable = false;
           if (trailhead.properties[trailWithNum] == trail.properties.name) {
             if (checkSegmentsForTrailname(trail.properties.name, trail.properties.source) || !USE_LOCAL) {
               dataAvailable = true;
-            } else {
+            } 
+            else {
               console.log("skipping " + trail.properties.name + "/" + trail.properties.source + ": no segment data");
             }
             if (filterResults(trail, trailhead)) {
