@@ -733,7 +733,7 @@ function startup() {
     console.log("fetchTrailheads");
     var callData = {
       type: "GET",
-      path: "trailheads?near_lat=" + location.lat + "&near_lng=" + location.lng
+      path: "trailheads?opentrails=true&near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     makeAPICall(callData, function(response) {
       populateOriginalTrailheads(response);
@@ -743,8 +743,6 @@ function startup() {
     });
   }
 
-
-
   // given the fetchTrailheads response, a geoJSON collection of trailheads ordered by distance,
   // populate trailheads[] with the each trailhead's stored properties, a Leaflet marker, 
   // and a place to put the trails for that trailhead.
@@ -752,9 +750,9 @@ function startup() {
   function populateOriginalTrailheads(trailheads) {
     console.log("populateOriginalTrailheads");
     originalTrailheads = [];
-    for (var i = 0; i < trailheads.data.length; i++) {
-      var currentFeature = trailheads.data[i];
-      var coordinates = fetchTrailHeadCoordinates(currentFeature.id);
+    for (var i = 0; i < trailheads.data.features.length; i++) {
+      var currentFeature = trailheads.data.features[i];
+      var coordinates = currentFeature.geometry.coordinates;
       var currentFeatureLatLng = new L.LatLng(coordinates[1], coordinates[0]);
       // var newMarker = L.marker(currentFeatureLatLng, ({
       //   icon: trailheadIcon1
@@ -765,7 +763,7 @@ function startup() {
         opacity: 0.8
       }).setRadius(MARKER_RADIUS);
       var trailhead = {
-        attributes: currentFeature.trailhead_attributes,
+        attributes: currentFeature.properties,
         geometry: currentFeatureLatLng,
         marker: newMarker,
         trails: [],
@@ -774,16 +772,6 @@ function startup() {
       setTrailheadEventHandlers(trailhead);
       originalTrailheads.push(trailhead);
     }
-  }
-
-  function fetchTrailHeadCoordinates(trailhead_id) {
-    var callData = {
-      type: "GET",
-      path: "trailheads/" + trailhead_id
-    };
-
-    var response = makeAPICallSync(callData);
-    return response.geometry.coordinates;
   }
 
   function setTrailheadEventHandlers(trailhead) {
@@ -824,7 +812,7 @@ function startup() {
     console.log("fetchTraildata");
     var callData = {
       type: "GET",
-      path: "trails?near_lat=" + location.lat + "&near_lng=" + location.lng
+      path: "trails?opentrails=true&near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     makeAPICall(callData, function(response) {
       populateTrailData(response);
@@ -836,7 +824,7 @@ function startup() {
 
   function populateTrailData(trailDataGeoJSON) {
     for (var i = 0; i < trailDataGeoJSON.data.length; i++) {
-      originalTrailData[trailDataGeoJSON.data[i].id] = trailDataGeoJSON.data[i];
+      originalTrailData[trailDataGeoJSON.data[i].outerspatial.id] = trailDataGeoJSON.data[i];
     }
     currentTrailData = $.extend(true, {}, originalTrailData);
   }
@@ -845,7 +833,7 @@ function startup() {
     console.log("fetchTrailsegments");
     var callData = {
       type: "GET",
-      path: "trail_segments?near_lat=" + location.lat + "&near_lng=" + location.lng
+      path: "trail_segments?opentrails=true&near_lat=" + location.lat + "&near_lng=" + location.lng
     };
     // if (SMALL) {
     //   callData.path = "/trailsegments.json?simplify=" + ALL_SEGMENT_LAYER_SIMPLIFY;
@@ -878,9 +866,9 @@ function startup() {
 
   function createSegmentTrailnameCache() {
     console.log("createSegmentTrailnameCache");
-    for (var segmentIndex = 0; segmentIndex < trailSegments.features.length; segmentIndex++) {
+    for (var segmentIndex = 0; segmentIndex < trailSegments.data.features.length; segmentIndex++) {
       // var segment = $.extend(true, {}, trailSegments.features[segmentIndex]);
-      var segment = trailSegments.features[segmentIndex];
+      var segment = trailSegments.data.features[segmentIndex];
       for (var i = 0; i < 6; i++) {
         var fieldName = "trail" + i;
         if (segment.properties[fieldName]) {
@@ -928,7 +916,7 @@ function startup() {
     var allSegmentLayer = new L.FeatureGroup();
     // console.log("visibleAllTrailLayer start");
     // make a normal visible layer for the segments, and add each of those layers to the allVisibleSegmentsArray
-    var visibleAllTrailLayer = L.geoJson(response, {
+    var visibleAllTrailLayer = L.geoJson(response.data, {
       style: {
         color: NORMAL_SEGMENT_COLOR,
         weight: NORMAL_SEGMENT_WEIGHT,
@@ -946,7 +934,7 @@ function startup() {
 
     // make the special invisible layer for mouse/touch events. much wider paths.
     // make popup html for each segment
-    var invisibleAllTrailLayer = L.geoJson(response, {
+    var invisibleAllTrailLayer = L.geoJson(response.data, {
       style: {
         opacity: 0,
         weight: 20,
