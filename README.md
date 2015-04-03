@@ -1,37 +1,22 @@
 Trailsy
 =======
 
-Trailsy is the front-end component of To The Trails, a project developed by Code for America fellows working with partners in Summit County, Ohio.
-
-To The Trails is a web application where citizens can find information about the trail network of their region.
-The app incorporates data from multiple agencies and park stewards, including the Cuyahoga Valley National Park and Metro Parks, Serving Summit County.
-To The Trails helps citizens find trails that fit their needs based on attributes like length, amenities and activities.
-
-The current production version is at [http://tothetrails.com]().
+This version of Trailsy is a Code for Boulder project that uses [OuterSpatial](http://outerspatial.com) API calls to retrieve OpenTrails data. It has been forked from the original Code for America 2013 Trailsy project found [here](https://github.com/codeforamerica/trailsy).
 
 #### Credits
 
 The team includes
+* [Mario Barrenechea][mbarrenecheajr], developer
+* [Robert Soden][rsoden], developer
+* You, if you're interested in volunteering!
 
-* [Dan Avery][danavery], developer
-* [Katie Lewis][katie], designer
-* [Alan Williams][alanjosephwilliams], third wheel
+[mbarrenecheajr]: https://github.com/mbarrenecheajr
+[rsoden]: https://github.com/rsoden
 
-[katie]: https://github.com/katielewis
-[danavery]: https://github.com/danavery
-[alanjosephwilliams]: https://github.com/alanjosephwilliams
-
-You can contact us all together through our team e-mail address at summitco@codeforamerica.org.
+You can contact us here if you would like to get involved.
 
 ## Setup
-
-*(For quick step-by-step instructions for creating a new deploy of To The Trails/Trailsy, try the [new deploy instructions](https://github.com/codeforamerica/trailsy/wiki/Deploying-a-New-Instance) on the project [wiki](https://github.com/codeforamerica/trailsy/wiki).)*
-
-This front-end code is self-contained and can be used with any existing instance of [Trailsyserver](http://www.github.com/codeforamerica/trailsyserver), which provides a REST-like API to trail data. Almost all of the Trailsy-specific code is in `js/trailhead.js`. Change `API_HOST` at the beginning of that file to point to a Trailsyserver instance, and serve up the app directory with the HTTP server of your choice.
-
-This repository is included as a submodule of Trailsyserver in its `/public` directory, but can be hosted separately, and should be during development unless you're well acquainted with the subtleties of git submodules.  See the [docs on deploying new versions](https://github.com/codeforamerica/trailsy/wiki/Pushing-New-Versions-To-Heroku) for information on keeping the submodule code up to date.
-
-The app is lightly customized for use in Summit County, but can be repurposed for other areas with minimal effort. There is a constant named AKRON in trailhead.js that can be changed to whatever default location you desire.
+Just download/clone the code, serve up the root project directory with an HTTP Web Server of your choice, and you should be good to go. Since the project is a WIP, expect lots of problems.
 
 ## Contributing
 In the spirit of [free software][free-sw], **everyone** is encouraged to help
@@ -53,14 +38,10 @@ Here are some ways *you* can contribute:
 * by reviewing patches
 * [financially][]
 
-[issues]: https://github.com/codeforamerica/codeforamerica/trailsy/issues
-[financially]: https://secure.codeforamerica.org/page/contribute
-
 ## Submitting an Issue
-
 Please note that this application is still an in-development prototype. 
 
-We use the [GitHub issue tracker][issues] to track bugs and features. Before
+We use the GitHub issue tracker to track bugs and features. Before
 submitting a bug report or feature request, check to make sure it hasn't
 already been submitted. You can indicate support for an existing issue by
 voting it up. When submitting a bug report, please include any details that might 
@@ -73,10 +54,5 @@ be necessary to reproduce the bug.
 4. Commit and push your changes.
 5. Submit a pull request.
 
-##Reuse
-If you are looking to reuse and customize Trailsy, you can find .eps files for the artwork <a href="https://github.com/katielewis/trailsy-designassets" target="_blank">here</a>.
-
 ## Copyright
-Copyright (c) 2013 Code for America. See [LICENSE][] for details.
-
-[license]: https://github.com/codeforamerica/streetmix/blob/master/LICENSE.md
+This fork complies with the same copyright notice as derived from the original project. This project does not use Code for America and its contributors to promote or endorse other products.
