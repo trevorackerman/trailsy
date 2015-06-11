@@ -1,0 +1,23 @@
+{
+  "name": "trailsy",
+  "version": "0.0.0",
+  "description": "",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "dependencies": {
+    "async": "^1.2.1",
+    "jquery": "^2.1.4",
+    "leaflet": "^0.7.3",
+    "leaflet-providers": "^1.1.0",
+    "leaflet-usermarker": "^1.0.0"
+  },
+  "devDependencies": {
+    "script-loader": "^0.6.1",
+    "webpack": "^1.9.10",
+    "webpack-dev-server": "^1.9.0"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --progress --colors",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

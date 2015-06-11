@@ -1,3 +1,5 @@
+var $ = require("jquery");
+
 $(document).ready(function() {
     // Collapsible Menu
     function accordion(e) {
@@ -48,7 +50,5 @@ $(document).ready(function() {
     accordion('.trigger2');
     accordion('.trigger3');
     accordion('.triggerAbout');
-  
+
 });//end document.ready()
-
-

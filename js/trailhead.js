@@ -1,3 +1,23 @@
+var $ = jQuery = require("jquery");
+
+require("script-loader");
+require("script!./vendor/modernizr.js");
+
+var L = require("leaflet");
+require("leaflet-providers");
+require("leaflet-usermarker");
+
+var async = require("async");
+
+/* Still haven't looked at integrating or deleting these libraries:
+xdr.js
+oldbrowser.js
+html5shiv.js
+respond.min.js
+*/
+// Or at bringing back custom builds of leaflet and jquery.
+
+
 var console = console || {
   "log": function() {}
 };
