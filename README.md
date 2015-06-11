@@ -14,6 +14,8 @@ The team includes
 
 [mbarrenecheajr]: https://github.com/mbarrenecheajr
 [rsoden]: https://github.com/rsoden
+[garborg]: https://github.com/garborg
+[JamesGould123]: https://github.com/JamesGould123
 
 You can contact us here if you would like to get involved.
 
