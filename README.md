@@ -8,6 +8,8 @@ This version of Trailsy is a Code for Boulder project that uses [OuterSpatial](h
 The team includes
 * [Mario Barrenechea][mbarrenecheajr], developer
 * [Robert Soden][rsoden], developer
+* [Sean Garborg][garborg], developer
+* [James Gould][JamesGould123], developer
 * You, if you're interested in volunteering!
 
 [mbarrenecheajr]: https://github.com/mbarrenecheajr
@@ -34,9 +36,9 @@ Here are some ways *you* can contribute:
 * by writing code (**no patch is too small**: fix typos, add comments, clean up
   inconsistent whitespace)
 * by refactoring code
-* by closing [issues][]
+* by closing [issues](https://github.com/CodeForBoulder/trailsy/issues)
 * by reviewing patches
-* [financially][]
+* [financially](https://secure.codeforamerica.org/page/contribute/default?source_codes=footer-donate-link/)
 
 ## Submitting an Issue
 Please note that this application is still an in-development prototype. 
@@ -56,3 +58,6 @@ be necessary to reproduce the bug.
 
 ## Copyright
 This fork complies with the same copyright notice as derived from the original project. This project does not use Code for America and its contributors to promote or endorse other products.
+
+## Licensing
+This project is licensed under a BSD 3-clause license, which can be found [here](./License.md)
