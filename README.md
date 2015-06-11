@@ -20,7 +20,11 @@ The team includes
 You can contact us here if you would like to get involved.
 
 ## Setup
-Just download/clone the code, serve up the root project directory with an HTTP Web Server of your choice, and you should be good to go. Since the project is a WIP, expect lots of problems.
+This project depends on Node.js (for dependency management, the build step, and a dev server), which we will assume you've installed either from a binary [here](https://nodejs.org/download/) or using your favorite package manager.
+
+After cloning this repo and moving to the repo directory at the command line, running `npm install` will install remaining dependencies (local to this project), after which `npm start` will launch a dev server that serves the app at `http://localhost:8080`.
+
+Since the conversion to using OpenTrails is a WIP, expect some functionality to be missing.
 
 ## Contributing
 In the spirit of [free software][free-sw], **everyone** is encouraged to help
