@@ -2,13 +2,13 @@
     background-image: url("../../img/Boulder_Pass_Trailhead.jpg");
 }
 
-.offsetZoomControl {
+.in-the-middle {
     cursor: pointer;
     position: absolute;
-    top: 5em;
-    right: 5em;
+    top: 2em;
+    left: 30em;
     display: block;
-    width: 35px;
+    width: 350px;
     z-index: 1000;
     -webkit-user-select: none;
     -moz-user-select: none;
