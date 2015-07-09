@@ -8,12 +8,15 @@
 <head>
   <title>To The Trails: Boulder County</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="styles/css/leaflet.css"/>
   <!--[if lte IE 8]>
   <link rel="stylesheet" href="styles/css/leaflet.ie.css" />
   <![endif]-->
   <link rel="stylesheet" href="styles/css/leaflet.usermarker.css"/>
   <link rel="stylesheet" type="text/css" href="styles/css/main.css"/>
+  <link rel="stylesheet" type="text/css" href="styles/css/newmain.css"/>
+
   <!-- bookmark icons -->
   <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/AppIcons/AppIcons-Icon-144x144.png" />
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/AppIcons/AppIcons-Icon-114x114.png" />
@@ -37,7 +40,14 @@
         <!-- Map -->
         <section class="trailMapContainer">
           <!-- <div id="crosshair"></div> -->
-          <div id="trailMapLarge"></div>
+          <div id="trailMapLarge" class="trailhead-bg">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                <span class="sr-only">45% Complete</span>
+              </div>
+            </div>
+            <!--<img src="img/Boulder_Pass_Trailhead.jpg"></img>-->
+          </div>
           <div class="offsetZoomControl">
             <a class="offsetZoomIn">+</a>
             <a class="offsetZoomOut">&mdash;</a>
