@@ -2,6 +2,81 @@
     background-image: url("../../img/Boulder_Pass_Trailhead.jpg");
 }
 
+.white-bg {
+  background-color: ghostwhite;
+}
+
+.very-top {
+    top: 0px;
+}
+
+.covers-map {
+    z-index: 1000;
+}
+
+.text-aqua {
+    color: #00adef;
+}
+
+.text-aqua:hover {
+    color: #00adef;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.nav-header {
+    background-color:#523d32;
+    padding: .75em 0 .5em 0;
+    text-align: left;
+}
+
+.nav-footer {
+    background-color:  #91c73d;
+    padding: .75em .25em .5em 1em;
+    text-align: left;
+}
+
+.nav-footer:hover {
+    background-color: #b0d576;
+}
+
+.centered-container {
+    text-align: center;
+}
+.centered {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.slate-thin-border {
+    border: solid 1px #cccccc;
+}
+
+.slate-thin-border:hover {
+    border: solid 1px #aaaaaa;
+    background-color: #cccccc;
+}
+
+
+
+.bg-light-neutral {
+    background-color: whitesmoke;
+}
+
+.dark-neutral-text {
+    color: darkslategray;
+    text-shadow: none;
+}
+
+
+
+.logo {
+    width: 18em;
+}
+
 .in-the-middle {
     cursor: pointer;
     position: absolute;

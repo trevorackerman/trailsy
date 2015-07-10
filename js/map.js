@@ -4,6 +4,9 @@ var Config = require('./config.js');
 var elementId = 'trailMapLarge';
 var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
 
+map.removeControl(map.zoomControl);
+map.addControl(L.control.zoom({position: 'topright'}));
+
 L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
   maxZoom: 18,
   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
