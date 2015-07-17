@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --progress --colors --port 9000",
+    "sourcemap": "webpack --dev-tool source-map",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
