@@ -31,7 +31,7 @@ body {
 }
 body {
   color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  /*text-shadow: 0 1px 3px rgba(0,0,0,.5);*/
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
@@ -110,7 +110,7 @@ body {
  */
 
 .cover {
-  padding: 0 20px;
+  padding: 100px;
 }
 .cover .btn-lg {
   padding: 10px 20px;
@@ -137,13 +137,16 @@ body {
   .masthead {
     position: fixed;
     top: 0;
+    z-index: 2000;
+    background-color:#523d32;
+    padding: .75em 0 .5em 0;
+    text-align: left;
   }
   .mastfoot {
     position: fixed;
     bottom: 0;
   }
   /* Handle the widths */
-  .masthead,
   .mastfoot,
   .cover-container {
     width: 100%; /* Must be percentage or pixels for horizontal alignment */
@@ -151,7 +154,6 @@ body {
 }
 
 @media (min-width: 992px) {
-  .masthead,
   .mastfoot,
   .cover-container {
     padding-left: 2em;
@@ -159,9 +161,4 @@ body {
     margin-left: 0em;
     margin-rigth: 0em;
   }
-}
-
-/* override leaflet style */
-.leaflet-popup-content-wrapper {
-  background-color: rgba(100,100,100,.5);;
 }

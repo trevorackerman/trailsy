@@ -33,63 +33,40 @@
     <div class="site-wrapper-inner">
 
         <div class="cover-container">
-
-            <div class="inner cover">
-                <div class="row">
-                    <div class="col-md-4 bg-light-neutral covers-map">
-                        <div class="row nav-header">
-                            <img class="logo" src="img/logo-bc.png">
-                        </div>
-                        <div class="row dark-neutral-text">
-                            <div class="well">
-
-                                <p>Explore trails using the map or narrow your search using these filters.</p>
-
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search Trail Name or Keyword">
-                              <span class="input-group-btn">
-                                <button class="btn btn-default slate-thin-border glyphicon glyphicon-search very-top"
-                                        type="button"/>
-                              </span>
-
-                                </div>
-
-                                <div class="col-xs-12" style="height:1em;"></div>
-
-                                <p>Find Trails by Length in Miles</p>
-
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-info">0 to 2</button>
-                                    <button type="button" class="btn btn-info">2 to 5</button>
-                                    <button type="button" class="btn btn-info">5 to 10</button>
-                                    <button type="button" class="btn btn-info">10+</button>
-                                </div>
-                                <p></p>
-
-                                <div class="col-xs-12" style="height:1em;"></div>
-
-                                <p>Popular Trail Types</p>
-
-                                <div class="col-xs-12" style="height:1em;"></div>
-
-                                <div class="centered-container">
-                                    <a class="text-aqua centered" href="#">Clear Search Criteria</a>
-                                </div>
-
-                                <div class="col-xs-12" style="height:1em;"></div>
-
-                                <p class="text-right">Find Trails by Activities<span
-                                        class="glyphicon glyphicon-triangle-bottom"/></p>
-                            </div>
-                        </div>
-                        <div class="row">
-
-                            <div class="nav-footer">
-                                <p>Loading... <span class="glyphicon glyphicon-triangle-bottom"/></p>
-                            </div>
-                        </div>
+            <div class="masthead">
+                <span class="trailsy-brand">
+                    <span>TO THE</span>
+                    <span class="fancy-serif">TRAILS</span>
+                </span>
+                <span>
+                    <span id="triangle-right"></span>
+                </span>
+                <span class="trailsy-brand-inverse">Boulder County</span>
+                <span class="navbar-form">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success">Find by Length</button>
+                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Up to 2 Miles</a></li>
+                            <li><a href="#">2 to 5 Miles</a></li>
+                            <li><a href="#">5 to 10 Miles</a></li>
+                            <li><a href="#">Over 10 Miles</a></li>
+                        </ul>
                     </div>
-                </div>
+                </span>
+                <span class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Trails">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default slate-thin-border glyphicon glyphicon-search very-top" type="button"/>
+                        </span>
+                    </div>
+                </span>
+            </div>
+            <div class="inner cover">
             </div>
         </div>
     </div>

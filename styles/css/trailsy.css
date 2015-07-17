@@ -89,3 +89,43 @@
     -moz-user-select: none;
     user-select: none;
 }
+
+.trailsy-brand {
+    background-color:  #91C73D;
+    color: #523d32;
+    padding: 0.75em;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.trailsy-brand > span {
+    vertical-align: middle;
+}
+
+.trailsy-brand-inverse {
+    background-color:#523d32;
+    color:  #91C73D;
+    font-size: 14px;
+}
+
+.fancy-serif {
+    font-family: Rockwell,Georgia,Times,Times New Roman,serif;
+    font-size: 1.75em;
+}
+
+/* https://css-tricks.com/examples/ShapesOfCSS/#triangle-right */
+#triangle-right {
+    width: 0;
+    height: 0;
+    border-top: 1.6em solid transparent;
+    border-left: 1em solid #91C73D;
+    border-bottom: 1.6em solid transparent;
+    display: inline-block;
+    margin-bottom: -1.1em;
+}
+
+
+/* override leaflet style */
+.leaflet-popup-content-wrapper {
+    background-color: rgba(100,100,100,.5);;
+}
