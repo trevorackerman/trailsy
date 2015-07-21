@@ -4,6 +4,7 @@ var Config = require('./config.js');
 var trailData = require('./trailData.js');
 var trailheads = require('./trailHeads.js');
 
+
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
@@ -26,6 +27,13 @@ var trailMap = (function (){
     },
     buildTrailheads: function(geoJson) {
       trailheads.updateGeoJson(geoJson);
+      trailheadsLayer = trailheads.buildTrailheads();
+      map.addLayer(trailheadsLayer);
+    },
+    filterTrailheads: function(text) {
+      map.removeLayer(trailheadsLayer);
+      trailheads.clearFilters();
+      trailheads.addFilter(text);
       trailheadsLayer = trailheads.buildTrailheads();
       map.addLayer(trailheadsLayer);
     }

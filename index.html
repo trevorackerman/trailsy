@@ -59,9 +59,9 @@
                 </span>
                 <span class="navbar-form" role="search">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search Trails">
+                        <input id="search" type="text" class="form-control" placeholder="Search Trails">
                         <span class="input-group-btn">
-                            <button class="btn btn-default slate-thin-border glyphicon glyphicon-search very-top" type="button"/>
+                            <button class="btn btn-default slate-thin-border glyphicon glyphicon-search very-top" type="button" onclick="trailMap.filterTrailheads($('#search').val())"/>
                         </span>
                     </div>
                 </span>
