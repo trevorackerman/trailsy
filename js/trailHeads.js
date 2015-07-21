@@ -1,7 +1,9 @@
 "use strict";
 var L = require('leaflet');
 
-var layers = (function (){
+var trailheads = (function (){
+    var layer;
+    var geoJson;
     var trailheadIcon = L.icon({
         iconUrl: 'img/icon_trailhead_active.png',
         iconSize:     [38, 38], // size of the icon
@@ -10,8 +12,12 @@ var layers = (function (){
     });
 
     return {
-        addTrailheads: function(trailheads, map) {
-            var trailheadLayer = L.geoJson(trailheads, {
+        updateGeoJson: function (data) {
+            geoJson = data;
+            return this;
+        },
+        buildTrailheads: function() {
+            layer = L.geoJson(geoJson, {
                 pointToLayer: function (feature, latlng) {
                     return L.marker(latlng, {icon: trailheadIcon});
                 },
@@ -21,9 +27,9 @@ var layers = (function (){
                         feature.geometry.coordinates);
                 }
             });
-            trailheadLayer.addTo(map);
+            return layer;
         }
     }
 })();
 
-module.exports = layers;
+module.exports = trailheads;

@@ -1,10 +1,13 @@
 "use strict";
 var L = require('leaflet');
 var Config = require('./config.js');
+var trailData = require('./trailData.js');
+var trailheads = require('./trailHeads.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
+  var trailheadsLayer;
 
   map.removeControl(map.zoomControl);
   map.addControl(L.control.zoom({position: 'topright'}));
@@ -18,13 +21,13 @@ var trailMap = (function (){
   }).addTo(map);
 
   return {
-    trailData: {},
-    layers: {},
     fetchTrailheads: function() {
-      this.trailData.fetchTrailheads(this)
+      trailData.fetchTrailheads(this)
     },
-    addTrailheads: function(trailheads) {
-      this.layers.addTrailheads(trailheads, map);
+    buildTrailheads: function(geoJson) {
+      trailheads.updateGeoJson(geoJson);
+      trailheadsLayer = trailheads.buildTrailheads();
+      map.addLayer(trailheadsLayer);
     }
   }
 })();

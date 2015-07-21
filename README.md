@@ -1,7 +1,10 @@
 Trailsy
 =======
 
-This version of Trailsy is a Code for Boulder project that uses [OuterSpatial](http://outerspatial.com) API calls to retrieve OpenTrails data. It has been forked from the original Code for America 2013 Trailsy project found [here](https://github.com/codeforamerica/trailsy).
+This version of Trailsy is a Code for Boulder project that uses [OuterSpatial](http://outerspatial.com) API calls to
+retrieve OpenTrails data. 
+
+It has been forked from the original Code for America 2013 Trailsy project found [here](https://github.com/codeforamerica/trailsy).
 
 #### Credits
 
@@ -10,20 +13,45 @@ The team includes
 * [Robert Soden][rsoden], developer
 * [Sean Garborg][garborg], developer
 * [James Gould][JamesGould123], developer
+* [Trevor Ackerman][trevorackerman], developer
 * You, if you're interested in volunteering!
 
 [mbarrenecheajr]: https://github.com/mbarrenecheajr
 [rsoden]: https://github.com/rsoden
 [garborg]: https://github.com/garborg
 [JamesGould123]: https://github.com/JamesGould123
+[trevorackerman]: https://github.com/trevorackerman
 
 You can contact us here if you would like to get involved.
 
 ## Setup
-This project depends on Node.js (for dependency management, the build step, and a dev server), which we will assume you've installed either from a binary [here](https://nodejs.org/download/) or using your favorite package manager.
+This project depends on Node.js (for dependency management, the build step, and a dev server), which we will assume 
+you've installed either from a binary [here](https://nodejs.org/download/) or using your favorite package manager.
 
-After cloning this repo and moving to the repo directory at the command line, running `npm install` will install remaining dependencies (local to this project), after which `npm start` will launch a dev server that serves the app at `http://localhost:8080`.
+All remaining instructions assume you have:
+* Cloned this repo
+* Opend a Terminal or other command line utility
+* Changed the current directory to this repo
 
+### Building
+
+* Executing `npm install` at the command prompt will install dependencies and make trails ready to run
+
+### Running
+
+* Executing `npm start` at the command prompt will launch a development server
+* You may now access your local version of the Trailsy app at `http://localhost:8080`
+
+### Debugging
+
+To debug your local version of Trailsy in your browser's console and step through the individual javascript
+files that are packaged together into 'bundle.js', do the following:
+
+* Stop your local version of the Trailsy app (e.g. use `Ctrl-C` at the command prompt)
+* Execute `npm run-script sourcemap`
+* Start your local version of Trailsy just as in the above 'Running' section
+
+# Caveats
 Since the conversion to using OpenTrails is a WIP, expect some functionality to be missing.
 
 ## Contributing
@@ -63,7 +91,8 @@ be necessary to reproduce the bug.
 5. Submit a pull request.
 
 ## Copyright
-This fork complies with the same copyright notice as derived from the original project. This project does not use Code for America and its contributors to promote or endorse other products.
+This fork complies with the same copyright notice as derived from the original project. 
+This project does not use Code for America and its contributors to promote or endorse other products.
 
 ## Licensing
 This project is licensed under a BSD 3-clause license, which can be found [here](./License.md)
