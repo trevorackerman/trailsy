@@ -27,7 +27,16 @@ var trailheads = (function (){
             return this;
         },
         buildTrailheads: function() {
-            layer = L.geoJson(geoJson, layerOptions);
+            var tmpLayer = L.geoJson(geoJson, layerOptions);
+            if (layer.options == null) {
+                layer = tmpLayer;
+            }
+            else {
+                var features = tmpLayer.getLayers();
+                for (var i = 0; i < features.length; i++) {
+                    layer.addLayer(features[i]);
+                }
+            }
             return layer;
         },
         addFilter: function(text) {

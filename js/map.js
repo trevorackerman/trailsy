@@ -27,8 +27,13 @@ var trailMap = (function (){
     },
     buildTrailheads: function(geoJson) {
       trailheads.updateGeoJson(geoJson);
-      trailheadsLayer = trailheads.buildTrailheads();
-      map.addLayer(trailheadsLayer);
+      if (trailheadsLayer == null) {
+        trailheadsLayer = trailheads.buildTrailheads();
+        map.addLayer(trailheadsLayer);
+      }
+      else {
+        trailheads.buildTrailheads();
+      }
     },
     filterTrailheads: function(text) {
       map.removeLayer(trailheadsLayer);
