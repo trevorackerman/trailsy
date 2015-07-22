@@ -3,7 +3,7 @@ var L = require('leaflet');
 
 var trailheads = (function (){
     var layer = {};
-    var geoJson = {};
+    var geoJson = [];
     var trailheadIcon = L.icon({
         iconUrl: 'img/icon_trailhead_active.png',
         iconSize:     [38, 38], // size of the icon
@@ -22,21 +22,19 @@ var trailheads = (function (){
     };
 
     return {
+        clear: function() {
+            if (geoJson.length == null) {
+                return;
+            }
+            geoJson = {};
+            layer = {};
+        },
         updateGeoJson: function(data) {
-            geoJson = data;
+            geoJson = geoJson.concat(data);
             return this;
         },
         buildTrailheads: function() {
-            var tmpLayer = L.geoJson(geoJson, layerOptions);
-            if (layer.options == null) {
-                layer = tmpLayer;
-            }
-            else {
-                var features = tmpLayer.getLayers();
-                for (var i = 0; i < features.length; i++) {
-                    layer.addLayer(features[i]);
-                }
-            }
+            layer = L.geoJson(geoJson, layerOptions);
             return layer;
         },
         addFilter: function(text) {

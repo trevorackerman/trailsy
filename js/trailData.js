@@ -9,6 +9,10 @@ var trailData = (function (){
             page = 1
         }
 
+        if (page == 1) {
+            trailMap.clearTrailheads();
+        }
+
         $.getJSON(Config.trailheadEndpoint + "/?page=" + page, function(trailheadResponse){
             var paging = trailheadResponse.paging;
             var geoJson = trailheadResponse.data;

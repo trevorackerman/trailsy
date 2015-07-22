@@ -25,18 +25,22 @@ var trailMap = (function (){
     fetchTrailheads: function() {
       trailData.fetchTrailheads(this)
     },
-    buildTrailheads: function(geoJson) {
-      trailheads.updateGeoJson(geoJson);
+    clearTrailheads: function () {
       if (trailheadsLayer == null) {
-        trailheadsLayer = trailheads.buildTrailheads();
-        map.addLayer(trailheadsLayer);
+        return;
       }
-      else {
-        trailheads.buildTrailheads();
-      }
+
+      map.removeLayer(trailheadsLayer);
+      trailheadsLayer = null;
+    },
+    buildTrailheads: function(geoJson) {
+      this.clearTrailheads();
+      trailheads.updateGeoJson(geoJson);
+      trailheadsLayer = trailheads.buildTrailheads();
+      map.addLayer(trailheadsLayer);
     },
     filterTrailheads: function(text) {
-      map.removeLayer(trailheadsLayer);
+      this.clearTrailheads();
       trailheads.clearFilters();
       trailheads.addFilter(text);
       trailheadsLayer = trailheads.buildTrailheads();
