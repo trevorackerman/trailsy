@@ -11,13 +11,43 @@ var trailheads = (function (){
         popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
     });
 
+    var amenityIconMap = {
+        "Drinking Water": ["icon_drinking_water_green.png", "icon_drinking_water_no.png"],
+        "Kiosk":          ["icon_kiosk_green.png", "icon_kiosk_no.png"],
+        "Parking":        ["icon_parking_green.png", "icon_parking_no.png"],
+        "Restrooms":      ["icon_restroom_green.png", "icon_restroom_no.png"]
+    };
+
+    var getTrailheadAmenities = function(trailhead) {
+        var amenityContent = "";
+        for (var i = 0; i < trailhead.trailhead_attributes.length; i++) {
+            var name = trailhead.trailhead_attributes[i].attribute.name;
+            var value = trailhead.trailhead_attributes[i].value;
+
+            if (amenityIconMap[name] != null) {
+                amenityContent += "<img class='popup-icon' src='img/";
+                if (value == "yes") {
+                    amenityContent += amenityIconMap[name][0];
+                }
+                else {
+                    amenityContent += amenityIconMap[name][1];
+                }
+                amenityContent += "'/>";
+            }
+        }
+        return amenityContent;
+    };
+
+    var generatePopupContent = function(trailhead) {
+        return "<h5>" + trailhead.name + "</h5>" + getTrailheadAmenities(trailhead);
+    };
+
     var layerOptions = {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {icon: trailheadIcon});
         },
         onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.name + " @ " +
-                feature.geometry.coordinates);
+            layer.bindPopup(generatePopupContent(feature));
         }
     };
 
@@ -26,7 +56,7 @@ var trailheads = (function (){
             if (geoJson.length == null) {
                 return;
             }
-            geoJson = {};
+            geoJson = [];
             layer = {};
         },
         updateGeoJson: function(data) {
