@@ -6,8 +6,11 @@ var trailheads = (function (){
     var geoJson = [];
     var trailheadIcon = L.icon({
         iconUrl: 'img/icon_trailhead_active.png',
-        iconSize:     [38, 38], // size of the icon
-        iconAnchor:   [19, 37], // point of the icon which will correspond to marker's location
+        iconSize:     [40, 41], // size of the icon
+        iconAnchor:   [16, 37], // point of the icon which will correspond to marker's location
+        shadowUrl: 'img/icon_trailhead_shadow.png',
+        shadowSize: [90, 30],
+        shadowAnchor: [-2,25],
         popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
     });
 
