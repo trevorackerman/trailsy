@@ -3,6 +3,7 @@ var L = require('leaflet');
 var Config = require('./config.js');
 var trailData = require('./trailData.js');
 var trailheads = require('./trailHeads.js');
+var trails = require('./trails.js');
 
 
 var trailMap = (function (){
@@ -23,7 +24,8 @@ var trailMap = (function (){
 
   return {
     fetchTrailheads: function() {
-      trailData.fetchTrailheads(this)
+      trailData.fetchTrailheads(this);
+      trailData.fetchTrails(this);
     },
     clearTrailheads: function () {
       if (trailheadsLayer == null) {
@@ -45,6 +47,9 @@ var trailMap = (function (){
       trailheads.addFilter(text);
       trailheadsLayer = trailheads.buildTrailheads();
       map.addLayer(trailheadsLayer);
+    },
+    addTrailsData: function(geoJson) {
+      trails.updateGeoJson(geoJson);
     }
   }
 })();

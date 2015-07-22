@@ -4,6 +4,29 @@ var start = new Date().getTime();
 
 var trailData = (function (){
     var trailheads = {};
+
+    var _fetchTrails = function(trailMap, page) {
+        if (page === undefined) {
+            page = 1
+        }
+
+        $.getJSON(Config.trailsEndpoint + "/?page=" + page, function(trailsResponse){
+            var paging = trailsResponse.paging;
+            var geoJson = trailsResponse.data.features;
+
+            trailMap.addTrailsData(geoJson);
+
+            if (!paging.last_page) {
+                page++;
+                _fetchTrails(trailMap, page);
+            }
+        })
+        .fail(function( jqxhr, textStatus, error ) {
+            var err = textStatus + ", " + error;
+            console.log( "Request Failed: " + err );
+        });
+    };
+
     var _fetchTrailheads = function(trailMap, page) {
         if (page === undefined) {
             page = 1
@@ -35,7 +58,8 @@ var trailData = (function (){
     };
 
     return {
-        fetchTrailheads: _fetchTrailheads
+        fetchTrailheads: _fetchTrailheads,
+        fetchTrails: _fetchTrails
     }
 })();
 
