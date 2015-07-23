@@ -33,15 +33,15 @@ var trailMap = (function (){
   }).addTo(map);
 
 
-  function showTrails(e) {
+  function removeTrails() {
     for (var i = 0; i < trailLayers.length; i++) {
       map.removeLayer(trailLayers[i]);
     }
     trailLayers.length = 0;
+  }
 
-    var markerLayer = e.target;
-    var feature = markerLayer.feature;
-    var trailIds = trailheads.getTrails(feature.properties.id);
+  function addTrailsForTrailhead(trailheadId) {
+    var trailIds = trailheads.getTrails(trailheadId);
 
     for (var i = 0; i < trailIds.length; i++) {
       var trailId = trailIds[i];
@@ -52,6 +52,13 @@ var trailMap = (function (){
     for (var i = 0; i < trailLayers.length; i++) {
       map.addLayer(trailLayers[i]);
     }
+  }
+
+  function showTrails(e) {
+    removeTrails();
+    var markerLayer = e.target;
+    var feature = markerLayer.feature;
+    addTrailsForTrailhead(feature.properties.id);
   }
 
   trailheads.setTrailMarkerClickHandler(showTrails);
@@ -76,6 +83,7 @@ var trailMap = (function (){
       map.addLayer(trailheadsLayer);
     },
     filterTrailheads: function(text) {
+      removeTrails();
       this.clearTrailheads();
       trailheads.clearFilters();
       trailheads.addFilter(text);
