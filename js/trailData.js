@@ -65,10 +65,6 @@ var trailData = (function (){
             var paging = trailheadResponse.paging;
             var geoJson = trailheadResponse.data;
 
-            for (var i = 0; i < geoJson.length; i++) {
-                geoJson[i].type = 'Feature'
-            }
-
             trailMap.buildTrailheads(geoJson);
 
             if (!paging.last_page) {

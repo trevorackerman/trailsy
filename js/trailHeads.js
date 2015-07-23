@@ -28,9 +28,10 @@ var trailheads = (function (){
 
     var getTrailheadAmenities = function(trailhead) {
         var amenityContent = "";
-        for (var i = 0; i < trailhead.trailhead_attributes.length; i++) {
-            var name = trailhead.trailhead_attributes[i].attribute.name;
-            var value = trailhead.trailhead_attributes[i].value;
+        var amenities = trailhead.properties.trailhead_attributes;
+        for (var i = 0; i < amenities.length; i++) {
+            var name = amenities[i].attribute.name;
+            var value = amenities[i].value;
 
             if (amenityIconMap[name] != null) {
                 amenityContent += "<img class='popup-icon' src='img/";
@@ -47,7 +48,7 @@ var trailheads = (function (){
     };
 
     var generatePopupContent = function(trailhead) {
-        return "<h5>" + trailhead.name + "</h5>" + getTrailheadAmenities(trailhead);
+        return "<h5>" + trailhead.properties.name + "</h5>" + getTrailheadAmenities(trailhead);
     };
 
     var layerOptions = {
@@ -78,9 +79,12 @@ var trailheads = (function (){
             trailheadsToTrailsMap = {};
         },
         updateGeoJson: function(data) {
-            for (var i = 0; i < data.length; i++) {
-                trailheadsToTrailsMap[data[i].id] = [];
-                trailData.fetchTrailIds(data[i].id, this.updateTrailIdMap);
+            var features = data.features;
+            for (var i = 0; i < features.length; i++) {
+                var trailheadId = features[i].properties.id;
+                var trailIds = features[i].properties.trail_ids;
+                trailheadsToTrailsMap[trailheadId] = trailIds;
+                console.log("Mapped trail ids " + trailheadsToTrailsMap[trailheadId] + " to trailhead " + trailheadId + " " + features[i].properties.name);
             }
             geoJson = geoJson.concat(data);
             return this;
@@ -91,16 +95,13 @@ var trailheads = (function (){
         },
         addFilter: function(text) {
             layerOptions.filter = function (feature, layer) {
-                return (feature.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
+                return (feature.properties.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
             }
         },
         clearFilters: function() {
             layerOptions.filter = function (feature, layer) {
                 return true;
             }
-        },
-        updateTrailIdMap: function(trailheadId, trailIds) {
-            trailheadsToTrailsMap[trailheadId] = trailheadsToTrailsMap[trailheadId].concat(trailIds);
         }
     }
 })();

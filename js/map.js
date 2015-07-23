@@ -41,7 +41,7 @@ var trailMap = (function (){
 
     var markerLayer = e.target;
     var feature = markerLayer.feature;
-    var trailIds = trailheads.getTrails(feature.id);
+    var trailIds = trailheads.getTrails(feature.properties.id);
 
     for (var i = 0; i < trailIds.length; i++) {
       var trailId = trailIds[i];

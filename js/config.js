@@ -10,7 +10,7 @@ module.exports = {
   baseEndpoint: baseEndpoint,
   trailEndpoint: trailsyBaseEndpoint + '/cached_trails_csv',
   //trailheadEndpoint: baseEndpoint + "/cached_trailheads",
-  trailheadEndpoint: trailsyBaseEndpoint + "/trailheads",
+  trailheadEndpoint: trailsyBaseEndpoint + "/trailheads.geojson",
   trailsEndpoint: trailsyBaseEndpoint + "/trails.geojson",
   trailSegmentEndpoint: trailsyBaseEndpoint + "/cached_trail_segments",
   mapCenter: mapCenter,
