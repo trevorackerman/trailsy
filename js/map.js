@@ -71,37 +71,43 @@ var trailMap = (function (){
     addTrailsForTrailhead(markerLayer, feature.properties.id);
   }
 
+  var _clearTrailheads = function () {
+    if (trailheadsLayer == null) {
+      return;
+    }
+
+    map.removeLayer(trailheadsLayer);
+    trailheadsLayer = null;
+  };
+
+  var _buildTrailheads = function(geoJson) {
+    _clearTrailheads();
+    trailheads.updateGeoJson(geoJson);
+    trailheadsLayer = trailheads.buildTrailheads();
+    map.addLayer(trailheadsLayer);
+  };
+
+  var _addTrailSegmentsData = function(geoJson) {
+    trailSegments.updateGeoJson(geoJson);
+  };
+
+  var _fetchTrailheads = function () {
+    _clearTrailheads();
+    trailData.fetchTrailheads(_buildTrailheads);
+    trailData.fetchTrailSegments(_addTrailSegmentsData);
+  };
+
   trailheads.setTrailMarkerClickHandler(showTrails);
 
   return {
-    fetchTrailheads: function() {
-      trailData.fetchTrailheads(this);
-      trailData.fetchTrailSegments(this);
-    },
-    clearTrailheads: function () {
-      if (trailheadsLayer == null) {
-        return;
-      }
-
-      map.removeLayer(trailheadsLayer);
-      trailheadsLayer = null;
-    },
-    buildTrailheads: function(geoJson) {
-      this.clearTrailheads();
-      trailheads.updateGeoJson(geoJson);
-      trailheadsLayer = trailheads.buildTrailheads();
-      map.addLayer(trailheadsLayer);
-    },
+    fetchTrailheads: _fetchTrailheads,
     filterTrailheads: function(text) {
       removeTrails();
-      this.clearTrailheads();
+      _clearTrailheads();
       trailheads.clearFilters();
       trailheads.addFilter(text);
       trailheadsLayer = trailheads.buildTrailheads();
       map.addLayer(trailheadsLayer);
-    },
-    addTrailSegmentsData: function(geoJson) {
-      trailSegments.updateGeoJson(geoJson);
     }
   }
 })();

@@ -5,7 +5,7 @@ var start = new Date().getTime();
 var trailData = (function (){
     var fetchingTrailSegments = false;
     var fetchingTrailHeads = false;
-    var _fetchTrailSegments = function(trailMap, page) {
+    var _fetchTrailSegments = function(callback, page) {
         fetchingTrailSegments = true;
         if (page === undefined) {
             page = 1
@@ -15,11 +15,12 @@ var trailData = (function (){
             var paging = trailsResponse.paging;
             var geoJson = trailsResponse.data.features;
 
-            trailMap.addTrailSegmentsData(geoJson);
+            //trailMap.addTrailSegmentsData(geoJson);
+            callback(geoJson);
 
             if (!paging.last_page) {
                 page++;
-                _fetchTrailSegments(trailMap, page);
+                _fetchTrailSegments(callback, page);
             }
             else {
                 fetchingTrailSegments = false;
@@ -31,25 +32,21 @@ var trailData = (function (){
         });
     };
 
-    var _fetchTrailheads = function(trailMap, page) {
+    var _fetchTrailheads = function(callback, page) {
         fetchingTrailHeads = true;
         if (page === undefined) {
             page = 1
-        }
-
-        if (page == 1) {
-            trailMap.clearTrailheads();
         }
 
         $.getJSON(Config.trailheadEndpoint + "/?page=" + page, function(trailheadResponse){
             var paging = trailheadResponse.paging;
             var geoJson = trailheadResponse.data;
 
-            trailMap.buildTrailheads(geoJson);
+            callback(geoJson);
 
             if (!paging.last_page) {
                 page++;
-                _fetchTrailheads(trailMap, page);
+                _fetchTrailheads(callback, page);
             }
             else {
                 fetchingTrailHeads = false;
