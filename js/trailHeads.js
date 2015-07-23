@@ -84,7 +84,6 @@ var trailheads = (function (){
                 var trailheadId = features[i].properties.id;
                 var trailIds = features[i].properties.trail_ids;
                 trailheadsToTrailsMap[trailheadId] = trailIds;
-                console.log("Mapped trail ids " + trailheadsToTrailsMap[trailheadId] + " to trailhead " + trailheadId + " " + features[i].properties.name);
             }
             geoJson = geoJson.concat(data);
             return this;

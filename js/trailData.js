@@ -3,33 +3,6 @@ var Config = require('./config.js');
 var start = new Date().getTime();
 
 var trailData = (function (){
-    var _fetchTrailIds = function(trailHeadId, callback, page) {
-        $.getJSON(Config.baseEndpoint + "/trailheads/" + trailHeadId + "/trails", function(trailIdsResponse){
-            if (page === undefined) {
-                page = 1
-            }
-
-            var paging = trailIdsResponse.paging;
-            var geoJson = trailIdsResponse.data;
-            var trailIds = [];
-            for (var i = 0; i < geoJson.length; i++) {
-                var item = geoJson[i];
-                trailIds.push(item.id);
-            }
-
-            callback(trailHeadId, trailIds);
-
-            if (!paging.last_page) {
-                page++;
-                _fetchTrailheads(trailMap, page);
-            }
-        })
-        .fail(function( jqxhr, textStatus, error ) {
-            var err = textStatus + ", " + error;
-            console.log( "Request Failed: " + err );
-        });
-    };
-
     var _fetchTrails = function(trailMap, page) {
         if (page === undefined) {
             page = 1
@@ -80,8 +53,7 @@ var trailData = (function (){
 
     return {
         fetchTrailheads: _fetchTrailheads,
-        fetchTrails: _fetchTrails,
-        fetchTrailIds: _fetchTrailIds
+        fetchTrails: _fetchTrails
     }
 })();
 
