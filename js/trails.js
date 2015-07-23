@@ -8,11 +8,14 @@ var trails = (function () {
         clear: function() {
             geoJsonMap = {};
         },
-        updateGeoJson : function(features) {
+        updateGeoJson: function(features) {
             for (var i = 0; i < features.length; i++) {
                 var feature = features[i];
                 geoJsonMap[feature.properties.id] = feature;
             }
+        },
+        getTrailGeoJson: function(trailId) {
+            return geoJsonMap[trailId];
         }
     }
 })();

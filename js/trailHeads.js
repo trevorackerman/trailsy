@@ -1,16 +1,21 @@
 "use strict";
 var L = require('leaflet');
+var trailData = require("./trailData.js");
+var trails = require("./trails.js");
 
 var trailheads = (function (){
     var layer = {};
     var geoJson = [];
+    var trailheadsToTrailsMap = {};
+    var trailheadMarkerClickHandler = null;
+
     var trailheadIcon = L.icon({
         iconUrl: 'img/icon_trailhead_active.png',
         iconSize:     [40, 41], // size of the icon
-        iconAnchor:   [16, 37], // point of the icon which will correspond to marker's location
+        iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
         shadowUrl: 'img/icon_trailhead_shadow.png',
         shadowSize: [90, 30],
-        shadowAnchor: [-2,25],
+        shadowAnchor: [0,27],
         popupAnchor:  [0, -30] // point from which the popup should open relative to the iconAnchor
     });
 
@@ -51,18 +56,32 @@ var trailheads = (function (){
         },
         onEachFeature: function (feature, layer) {
             layer.bindPopup(generatePopupContent(feature));
+            layer.on({
+                click: trailheadMarkerClickHandler
+            });
         }
     };
 
     return {
+        setTrailMarkerClickHandler: function(handler) {
+            trailheadMarkerClickHandler = handler;
+        },
+        getTrails: function(trailheadId) {
+            return trailheadsToTrailsMap[trailheadId];
+        },
         clear: function() {
             if (geoJson.length == null) {
                 return;
             }
             geoJson = [];
             layer = {};
+            trailheadsToTrailsMap = {};
         },
         updateGeoJson: function(data) {
+            for (var i = 0; i < data.length; i++) {
+                trailheadsToTrailsMap[data[i].id] = [];
+                trailData.fetchTrailIds(data[i].id, this.updateTrailIdMap);
+            }
             geoJson = geoJson.concat(data);
             return this;
         },
@@ -79,6 +98,9 @@ var trailheads = (function (){
             layerOptions.filter = function (feature, layer) {
                 return true;
             }
+        },
+        updateTrailIdMap: function(trailheadId, trailIds) {
+            trailheadsToTrailsMap[trailheadId] = trailheadsToTrailsMap[trailheadId].concat(trailIds);
         }
     }
 })();
