@@ -11,11 +11,13 @@ var trailMap = (function (){
   var trailheadsLayer;
   var trailLayers = [];
   var trailLayerOptions = {
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup("<h5>" + feature.properties.name + "</h5>");
+    },
     style: {
       color: "#678729",
       weight: 3,
       opacity: 1,
-      clickable: false,
       smoothFactor: 1.0
     }};
 
