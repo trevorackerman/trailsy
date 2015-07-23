@@ -1,7 +1,5 @@
 "use strict";
 var L = require('leaflet');
-var trailData = require("./trailData.js");
-var trails = require("./trails.js");
 
 var trailheads = (function (){
     var layer = {};

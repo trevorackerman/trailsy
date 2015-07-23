@@ -3,7 +3,7 @@ var L = require('leaflet');
 var Config = require('./config.js');
 var trailData = require('./trailData.js');
 var trailheads = require('./trailHeads.js');
-var trails = require('./trails.js');
+var trailSegments = require('./trailSegments.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
@@ -40,13 +40,23 @@ var trailMap = (function (){
     trailLayers.length = 0;
   }
 
-  function addTrailsForTrailhead(trailheadId) {
+  function addTrailsForTrailhead(markerLayer, trailheadId) {
     var trailIds = trailheads.getTrails(trailheadId);
 
     for (var i = 0; i < trailIds.length; i++) {
       var trailId = trailIds[i];
-      var trailsGeoJson = trails.getTrailGeoJson(trailId);
-      trailLayers.push(L.geoJson(trailsGeoJson, trailLayerOptions));
+      var segmentsGeoJson = trailSegments.getSegmentsGeoJson(trailId);
+
+      if (segmentsGeoJson == null) {
+        var popup = L.popup()
+            .setLatLng(markerLayer.getLatLng())
+            .setContent('<p>Busy retrieving trails for ' + markerLayer.feature.properties.name + '<br />Click again in a few seconds.</p>')
+            .openOn(map);
+        return;
+      }
+      for (var i = 0; i < segmentsGeoJson.length; i++) {
+        trailLayers.push(L.geoJson(segmentsGeoJson[i], trailLayerOptions));
+      }
     }
 
     for (var i = 0; i < trailLayers.length; i++) {
@@ -58,7 +68,7 @@ var trailMap = (function (){
     removeTrails();
     var markerLayer = e.target;
     var feature = markerLayer.feature;
-    addTrailsForTrailhead(feature.properties.id);
+    addTrailsForTrailhead(markerLayer, feature.properties.id);
   }
 
   trailheads.setTrailMarkerClickHandler(showTrails);
@@ -66,7 +76,7 @@ var trailMap = (function (){
   return {
     fetchTrailheads: function() {
       trailData.fetchTrailheads(this);
-      trailData.fetchTrails(this);
+      trailData.fetchTrailSegments(this);
     },
     clearTrailheads: function () {
       if (trailheadsLayer == null) {
@@ -90,8 +100,8 @@ var trailMap = (function (){
       trailheadsLayer = trailheads.buildTrailheads();
       map.addLayer(trailheadsLayer);
     },
-    addTrailsData: function(geoJson) {
-      trails.updateGeoJson(geoJson);
+    addTrailSegmentsData: function(geoJson) {
+      trailSegments.updateGeoJson(geoJson);
     }
   }
 })();

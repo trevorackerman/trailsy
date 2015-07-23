@@ -3,20 +3,26 @@ var Config = require('./config.js');
 var start = new Date().getTime();
 
 var trailData = (function (){
-    var _fetchTrails = function(trailMap, page) {
+    var fetchingTrailSegments = false;
+    var fetchingTrailHeads = false;
+    var _fetchTrailSegments = function(trailMap, page) {
+        fetchingTrailSegments = true;
         if (page === undefined) {
             page = 1
         }
 
-        $.getJSON(Config.trailsEndpoint + "/?page=" + page, function(trailsResponse){
+        $.getJSON(Config.trailSegmentsEndpoint + "/?page=" + page, function(trailsResponse){
             var paging = trailsResponse.paging;
             var geoJson = trailsResponse.data.features;
 
-            trailMap.addTrailsData(geoJson);
+            trailMap.addTrailSegmentsData(geoJson);
 
             if (!paging.last_page) {
                 page++;
-                _fetchTrails(trailMap, page);
+                _fetchTrailSegments(trailMap, page);
+            }
+            else {
+                fetchingTrailSegments = false;
             }
         })
         .fail(function( jqxhr, textStatus, error ) {
@@ -26,6 +32,7 @@ var trailData = (function (){
     };
 
     var _fetchTrailheads = function(trailMap, page) {
+        fetchingTrailHeads = true;
         if (page === undefined) {
             page = 1
         }
@@ -44,6 +51,9 @@ var trailData = (function (){
                 page++;
                 _fetchTrailheads(trailMap, page);
             }
+            else {
+                fetchingTrailHeads = false;
+            }
         })
         .fail(function( jqxhr, textStatus, error ) {
             var err = textStatus + ", " + error;
@@ -53,7 +63,13 @@ var trailData = (function (){
 
     return {
         fetchTrailheads: _fetchTrailheads,
-        fetchTrails: _fetchTrails
+        fetchTrailSegments: _fetchTrailSegments,
+        isFetchingTrailheads: function() {
+            return fetchingTrailHeads == true;
+        },
+        isFetchingTrailSegments: function() {
+            return fetchingTrailSegments == true;
+        }
     }
 })();
 
