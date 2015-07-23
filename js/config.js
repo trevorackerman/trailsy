@@ -7,7 +7,9 @@ var baseEndpoint = url + '/api/v0/applications/' + appId;
 
 module.exports = {
   trailEndpoint: baseEndpoint + '/cached_trails_csv',
-  trailheadEndpoint: baseEndpoint + "/cached_trailheads",
+  //trailheadEndpoint: baseEndpoint + "/cached_trailheads",
+  trailheadEndpoint: baseEndpoint + "/trailheads",
+  trailsEndpoint: baseEndpoint + "/trails.geojson",
   trailSegmentEndpoint: baseEndpoint + "/cached_trail_segments",
   mapCenter: mapCenter,
   defaultZoom: defaultZoom

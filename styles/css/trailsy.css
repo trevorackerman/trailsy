@@ -2,6 +2,81 @@
     background-image: url("../../img/Boulder_Pass_Trailhead.jpg");
 }
 
+.white-bg {
+  background-color: ghostwhite;
+}
+
+.very-top {
+    top: 0px;
+}
+
+.covers-map {
+    z-index: 1000;
+}
+
+.text-aqua {
+    color: #00adef;
+}
+
+.text-aqua:hover {
+    color: #00adef;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.nav-header {
+    background-color:#523d32;
+    padding: .75em 0 .5em 0;
+    text-align: left;
+}
+
+.nav-footer {
+    background-color:  #91c73d;
+    padding: .75em .25em .5em 1em;
+    text-align: left;
+}
+
+.nav-footer:hover {
+    background-color: #b0d576;
+}
+
+.centered-container {
+    text-align: center;
+}
+.centered {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.slate-thin-border {
+    border: solid 1px #cccccc;
+}
+
+.slate-thin-border:hover {
+    border: solid 1px #aaaaaa;
+    background-color: #cccccc;
+}
+
+
+
+.bg-light-neutral {
+    background-color: whitesmoke;
+}
+
+.dark-neutral-text {
+    color: darkslategray;
+    text-shadow: none;
+}
+
+
+
+.logo {
+    width: 18em;
+}
+
 .in-the-middle {
     cursor: pointer;
     position: absolute;
@@ -13,4 +88,53 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
+}
+
+.trailsy-brand {
+    background-color:  #91C73D;
+    color: #523d32;
+    padding: 0.75em;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.trailsy-brand > span {
+    vertical-align: middle;
+}
+
+.trailsy-brand-inverse {
+    background-color:#523d32;
+    color:  #91C73D;
+    font-size: 14px;
+}
+
+.fancy-serif {
+    font-family: Rockwell,Georgia,Times,Times New Roman,serif;
+    font-size: 1.75em;
+}
+
+/* https://css-tricks.com/examples/ShapesOfCSS/#triangle-right */
+#triangle-right {
+    width: 0;
+    height: 0;
+    border-top: 1.6em solid transparent;
+    border-left: 1em solid #91C73D;
+    border-bottom: 1.6em solid transparent;
+    display: inline-block;
+    margin-bottom: -1.1em;
+}
+
+
+/* override leaflet style */
+.leaflet-popup-content-wrapper {
+    color: #91C73D;
+    background-color: rgba(250,250,250,.85);
+}
+
+.leaflet-popup-content {
+    min-width: 10em;
+}
+
+.popup-icon {
+    height: 2.5em;
 }
