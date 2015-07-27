@@ -88,7 +88,7 @@ var trailMap = (function (){
   };
 
   var _addTrailSegmentsData = function(geoJson) {
-    trailSegments.updateGeoJson(geoJson);
+    trailSegments.updateGeoJson(geoJson.features);
   };
 
   var _fetchTrailheads = function () {
