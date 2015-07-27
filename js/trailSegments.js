@@ -8,19 +8,46 @@ var trailSegments = (function () {
         clear: function() {
             geoJsonMap = {};
         },
-        updateGeoJson: function(features) {
-            for (var i = 0; i < features.length; i++) {
-                var trailIds = features[i].properties.trail_ids;
+        updateGeoJson: function(segments) {
+            for (var i = 0; i < segments.length; i++) {
+                var segment = segments[i];
+                var trailIds = segment.properties.trail_ids;
                 for (var j = 0; j < trailIds.length; j++) {
-                    if (geoJsonMap[trailIds[j]] == null) {
-                        geoJsonMap[trailIds[j]] = [];
+                    var trailId = trailIds[j];
+                    if (geoJsonMap[trailId] == null) {
+                        geoJsonMap[trailId] = {};
+                        geoJsonMap[trailId].segments = [];
                     }
-                    geoJsonMap[trailIds[j]].push(features[i]);
+                    if (geoJsonMap[trailId].name != null) {
+                        segment.properties.trailNames = [];
+                        segment.properties.trailNames.push(geoJsonMap[trailId].name);
+                    }
+                    geoJsonMap[trailId].segments.push(segment);
                 }
             }
         },
         getSegmentsGeoJson: function(trailId) {
             return geoJsonMap[trailId];
+        },
+        addTrailNames: function(trails) {
+            for (var i in trails) {
+                var id = trails[i].properties.id;
+                var trailName = trails[i].properties.name;
+                if (geoJsonMap[id] == null) {
+                    geoJsonMap[id] = {};
+                    geoJsonMap[id].segments = [];
+                }
+
+                geoJsonMap[id].name = trailName;
+
+                for (var i in geoJsonMap[id].segments) {
+                    var segment = geoJsonMap[id].segments[i];
+                    if (segment.properties.trailNames == null) {
+                        segment.properties.trailNames = [];
+                    }
+                    segment.properties.trailNames.push(trailName);
+                }
+            }
         }
     }
 })();

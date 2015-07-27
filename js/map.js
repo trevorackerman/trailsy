@@ -12,7 +12,7 @@ var trailMap = (function (){
   var trailLayers = [];
   var trailLayerOptions = {
     onEachFeature: function (feature, layer) {
-      layer.bindPopup("<h5>" + feature.properties.name + "</h5>");
+      layer.bindPopup("<h5>" + feature.properties.trailNames + "</h5>");
     },
     style: {
       color: "#678729",
@@ -54,8 +54,9 @@ var trailMap = (function (){
             .openOn(map);
         return;
       }
-      for (var i = 0; i < segmentsGeoJson.length; i++) {
-        trailLayers.push(L.geoJson(segmentsGeoJson[i], trailLayerOptions));
+      for (var i = 0; i < segmentsGeoJson.segments.length; i++) {
+        var segment = segmentsGeoJson.segments[i];
+        trailLayers.push(L.geoJson(segment, trailLayerOptions));
       }
     }
 
@@ -91,10 +92,15 @@ var trailMap = (function (){
     trailSegments.updateGeoJson(geoJson.features);
   };
 
+  var _addTrailNames = function(geoJson) {
+    trailSegments.addTrailNames(geoJson.features);
+  };
+
   var _fetchTrailheads = function () {
     _clearTrailheads();
     trailData.fetchTrailheads(_buildTrailheads);
     trailData.fetchTrailSegments(_addTrailSegmentsData);
+    trailData.fetchTrailNames(_addTrailNames);
   };
 
   trailheads.setTrailMarkerClickHandler(showTrails);
