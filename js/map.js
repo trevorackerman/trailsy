@@ -2,7 +2,7 @@
 var L = require('leaflet');
 var Config = require('./config.js');
 var trailData = require('./trailData.js');
-var trailheads = require('./trailHeads.js');
+var trailheads = require('./trailHeadsLayer.js');
 var trailSegments = require('./trailSegments.js');
 
 var trailMap = (function (){

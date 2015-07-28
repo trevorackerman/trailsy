@@ -1,5 +1,4 @@
 "use strict";
-var L = require('leaflet');
 
 var trailSegments = (function () {
     var geoJsonMap = {};
