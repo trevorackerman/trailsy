@@ -2,14 +2,14 @@
 var L = require('leaflet');
 var Config = require('./config.js');
 var trailData = require('./trailData.js');
-var trailheads = require('./trailHeadsLayer.js');
+var trailHeads = require('./trailHeads.js');
+var trailHeadsLayer = require('./trailHeadsLayer.js');
 var trailSegments = require('./trailSegments.js');
 var trailSegmentsLayer = require('./trailSegmentsLayer.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
-  var trailheadsLayer;
 
   map.removeControl(map.zoomControl);
   map.addControl(L.control.zoom({position: 'topright'}));
@@ -29,7 +29,7 @@ var trailMap = (function (){
   }
 
   function addTrailsForTrailhead(markerLayer, trailheadId) {
-    var layers = trailSegmentsLayer.buildSegmentsLayerForTrailhead(trailheadId);
+    var layers = trailSegmentsLayer.buildForTrailhead(trailheadId);
 
     if (layers.length == 0) {
       var popup = L.popup()
@@ -52,19 +52,13 @@ var trailMap = (function (){
   }
 
   var _clearTrailheads = function () {
-    if (trailheadsLayer == null) {
-      return;
-    }
-
-    map.removeLayer(trailheadsLayer);
-    trailheadsLayer = null;
+    trailHeadsLayer.removeFrom(map);
   };
 
   var _buildTrailheads = function(geoJson) {
     _clearTrailheads();
-    trailheads.updateGeoJson(geoJson);
-    trailheadsLayer = trailheads.buildTrailheads();
-    map.addLayer(trailheadsLayer);
+    trailHeads.updateGeoJson(geoJson);
+    map.addLayer(trailHeadsLayer.build());
   };
 
   var _addTrailSegmentsData = function(geoJson) {
@@ -82,18 +76,19 @@ var trailMap = (function (){
     trailData.fetchTrailNames(_addTrailNames);
   };
 
-  trailheads.setTrailMarkerClickHandler(showTrails);
+  var _filterTrailheads = function(text) {
+    removeTrails();
+    _clearTrailheads();
+    trailHeadsLayer.clearFilters();
+    trailHeadsLayer.addFilter(text);
+    map.addLayer(trailHeadsLayer.build());
+  };
+
+  trailHeadsLayer.setClickHandler(showTrails);
 
   return {
     fetchTrailheads: _fetchTrailheads,
-    filterTrailheads: function(text) {
-      removeTrails();
-      _clearTrailheads();
-      trailheads.clearFilters();
-      trailheads.addFilter(text);
-      trailheadsLayer = trailheads.buildTrailheads();
-      map.addLayer(trailheadsLayer);
-    }
+    filterTrailheads: _filterTrailheads
   }
 })();
 

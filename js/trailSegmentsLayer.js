@@ -1,7 +1,7 @@
 "use strict";
 
 var trailSegments = require('./trailSegments.js');
-var trailHeadsLayer = require('./trailHeadsLayer.js');
+var trailHeads = require('./trailHeads.js');
 
 var trailSegmentsLayer = (function() {
     var segmentLayers = [];
@@ -17,13 +17,13 @@ var trailSegmentsLayer = (function() {
             smoothFactor: 1.0
         }};
 
-    var _buildSegmentsLayerForTrailhead = function(trailheadId) {
-        var trailIds = trailHeadsLayer.getTrails(trailheadId);
+    var _buildForTrailhead = function(trailHeadId) {
+        var trailIds = trailHeads.getTrails(trailHeadId);
         for (var i in trailIds) {
             var trailId = trailIds[i];
-            var segmentsGeoJson = trailSegments.getSegmentsGeoJson(trailId);
-            for (var j in segmentsGeoJson.segments) {
-                var segment = segmentsGeoJson.segments[j];
+            var segments = trailSegments.getSegmentsForTrail(trailId);
+            for (var j in segments) {
+                var segment = segments[j];
                 segmentLayers.push(L.geoJson(segment, _segmentLayerOptions));
             }
         }
@@ -42,7 +42,7 @@ var trailSegmentsLayer = (function() {
     };
 
     return {
-        buildSegmentsLayerForTrailhead: _buildSegmentsLayerForTrailhead,
+        buildForTrailhead: _buildForTrailhead,
         removeFrom: _removeFrom,
         clear: _clear
     }

@@ -1,11 +1,22 @@
 "use strict";
 var L = require('leaflet');
+var trailHeads = require('./trailHeads.js');
 
-var trailheads = (function (){
+var trailHeadsLayer = (function (){
     var layer = {};
-    var geoJson = [];
-    var trailheadsToTrailsMap = {};
-    var trailheadMarkerClickHandler = null;
+    var clickHandler = null;
+
+    var layerOptions = {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: trailheadIcon});
+        },
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup(_generatePopupContent(feature));
+            layer.on({
+                click: clickHandler
+            });
+        }
+    };
 
     var trailheadIcon = L.icon({
         iconUrl: 'img/icon_trailhead_active.png',
@@ -24,7 +35,7 @@ var trailheads = (function (){
         "Restrooms":      ["icon_restroom_green.png", "icon_restroom_no.png"]
     };
 
-    var getTrailheadAmenities = function(trailhead) {
+    var _getTrailheadAmenities = function(trailhead) {
         var amenityContent = "";
         var amenities = trailhead.properties.trailhead_attributes;
         for (var i = 0; i < amenities.length; i++) {
@@ -45,62 +56,48 @@ var trailheads = (function (){
         return amenityContent;
     };
 
-    var generatePopupContent = function(trailhead) {
-        return "<h5>" + trailhead.properties.name + "</h5>" + getTrailheadAmenities(trailhead);
+    var _build = function () {
+        layer = L.geoJson(trailHeads.getGeoJson(), layerOptions);
+        return layer;
     };
 
-    var layerOptions = {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {icon: trailheadIcon});
-        },
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup(generatePopupContent(feature));
-            layer.on({
-                click: trailheadMarkerClickHandler
-            });
+    var _removeFrom = function(that) {
+        that.removeLayer(layer);
+    };
+
+    var _clear = function() {
+        trailHeads.clear();
+        layer = {};
+    };
+
+    var _setClickHandler = function(handler) {
+        clickHandler = handler;
+    };
+
+    var _addFilter = function(text) {
+        layerOptions.filter = function (feature, layer) {
+            return (feature.properties.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
         }
+    };
+
+    var _clearFilters = function() {
+        layerOptions.filter = function (feature, layer) {
+            return true;
+        }
+    };
+
+    var _generatePopupContent = function(trailhead) {
+        return "<h5>" + trailhead.properties.name + "</h5>" + _getTrailheadAmenities(trailhead);
     };
 
     return {
-        setTrailMarkerClickHandler: function(handler) {
-            trailheadMarkerClickHandler = handler;
-        },
-        getTrails: function(trailheadId) {
-            return trailheadsToTrailsMap[trailheadId];
-        },
-        clear: function() {
-            if (geoJson.length == null) {
-                return;
-            }
-            geoJson = [];
-            layer = {};
-            trailheadsToTrailsMap = {};
-        },
-        updateGeoJson: function(data) {
-            var features = data.features;
-            for (var i = 0; i < features.length; i++) {
-                var trailheadId = features[i].properties.id;
-                var trailIds = features[i].properties.trail_ids;
-                trailheadsToTrailsMap[trailheadId] = trailIds;
-            }
-            geoJson = geoJson.concat(data);
-            return this;
-        },
-        buildTrailheads: function() {
-            layer = L.geoJson(geoJson, layerOptions);
-            return layer;
-        },
-        addFilter: function(text) {
-            layerOptions.filter = function (feature, layer) {
-                return (feature.properties.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
-            }
-        },
-        clearFilters: function() {
-            layerOptions.filter = function (feature, layer) {
-                return true;
-            }
-        }
+        build: _build,
+        removeFrom: _removeFrom,
+        clear: _clear,
+        setClickHandler: _setClickHandler,
+        addFilter: _addFilter,
+        clearFilters: _clearFilters
     }
 })();
 
-module.exports = trailheads;
+module.exports = trailHeadsLayer;

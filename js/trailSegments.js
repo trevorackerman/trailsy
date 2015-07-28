@@ -25,8 +25,11 @@ var trailSegments = (function () {
                 }
             }
         },
-        getSegmentsGeoJson: function(trailId) {
-            return geoJsonMap[trailId];
+        getSegmentsForTrail: function(trailId) {
+            if (geoJsonMap[trailId] == null || geoJsonMap[trailId].segments == null) {
+                return [];
+            }
+            return geoJsonMap[trailId].segments;
         },
         addTrailNames: function(trails) {
             for (var i in trails) {
