@@ -4,22 +4,12 @@ var Config = require('./config.js');
 var trailData = require('./trailData.js');
 var trailheads = require('./trailHeadsLayer.js');
 var trailSegments = require('./trailSegments.js');
+var trailSegmentsLayer = require('./trailSegmentsLayer.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
   var trailheadsLayer;
-  var trailLayers = [];
-  var trailLayerOptions = {
-    onEachFeature: function (feature, layer) {
-      layer.bindPopup("<h5>" + feature.properties.trailNames + "</h5>");
-    },
-    style: {
-      color: "#678729",
-      weight: 3,
-      opacity: 1,
-      smoothFactor: 1.0
-    }};
 
   map.removeControl(map.zoomControl);
   map.addControl(L.control.zoom({position: 'topright'}));
@@ -34,34 +24,23 @@ var trailMap = (function (){
 
 
   function removeTrails() {
-    for (var i = 0; i < trailLayers.length; i++) {
-      map.removeLayer(trailLayers[i]);
-    }
-    trailLayers.length = 0;
+    trailSegmentsLayer.removeFrom(map);
+    trailSegmentsLayer.clear();
   }
 
   function addTrailsForTrailhead(markerLayer, trailheadId) {
-    var trailIds = trailheads.getTrails(trailheadId);
+    var layers = trailSegmentsLayer.buildSegmentsLayerForTrailhead(trailheadId);
 
-    for (var i = 0; i < trailIds.length; i++) {
-      var trailId = trailIds[i];
-      var segmentsGeoJson = trailSegments.getSegmentsGeoJson(trailId);
-
-      if (segmentsGeoJson == null) {
-        var popup = L.popup()
-            .setLatLng(markerLayer.getLatLng())
-            .setContent('<p>Busy retrieving trails for ' + markerLayer.feature.properties.name + '<br />Click again in a few seconds.</p>')
-            .openOn(map);
-        return;
-      }
-      for (var i = 0; i < segmentsGeoJson.segments.length; i++) {
-        var segment = segmentsGeoJson.segments[i];
-        trailLayers.push(L.geoJson(segment, trailLayerOptions));
-      }
+    if (layers.length == 0) {
+      var popup = L.popup()
+          .setLatLng(markerLayer.getLatLng())
+          .setContent('<p>Busy retrieving trails for ' + markerLayer.feature.properties.name + '<br />Click again in a few seconds.</p>')
+          .openOn(map);
+      return;
     }
 
-    for (var i = 0; i < trailLayers.length; i++) {
-      map.addLayer(trailLayers[i]);
+    for (var i in layers) {
+      map.addLayer(layers[i]);
     }
   }
 
