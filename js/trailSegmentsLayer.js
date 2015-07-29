@@ -1,51 +1,48 @@
 "use strict";
 
-var trailSegments = require('./trailSegments.js');
-var trailHeads = require('./trailHeads.js');
+var openTrailLayer = require('./openTrailLayer.js');
 
 var trailSegmentsLayer = (function() {
-    var segmentLayers = [];
-
-    var _segmentLayerOptions = {
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup("<h5>" + feature.properties.trailNames + "</h5>");
-        },
-        style: {
-            color: "#678729",
-            weight: 3,
-            opacity: 1,
-            smoothFactor: 1.0
-        }};
-
-    var _buildForTrailhead = function(trailHeadId) {
-        var trailIds = trailHeads.getTrails(trailHeadId);
-        for (var i in trailIds) {
-            var trailId = trailIds[i];
-            var segments = trailSegments.getSegmentsForTrail(trailId);
-            for (var j in segments) {
-                var segment = segments[j];
-                segmentLayers.push(L.geoJson(segment, _segmentLayerOptions));
+    var _create = function() {
+        var spec = {
+            layerOptions: {
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup("<h5>" + feature.properties.trailNames + "</h5>");
+                },
+                style: {
+                    color: "#678729",
+                    weight: 3,
+                    opacity: 1,
+                    smoothFactor: 1.0
+                }
             }
-        }
+        };
 
-        return segmentLayers;
-    };
+        var trailHeads;
+        var trailSegments;
+        var that = openTrailLayer.create(spec);
 
-    var _removeFrom = function(that) {
-        for (var i in segmentLayers) {
-            that.removeLayer(segmentLayers[i]);
-        }
-    };
+        that.setTrailHeads = function(tHeads) {
+            trailHeads = tHeads;
+        };
 
-    var _clear = function() {
-        segmentLayers.length = 0;
+        that.setTrailSegments = function (tSegments) {
+            trailSegments = tSegments;
+            that.setOpenTrailFeature(trailSegments);
+        };
+
+        that.buildForTrailhead = function(trailHeadId) {
+            var trailIds = trailHeads.getTrails(trailHeadId);
+            trailSegments.setCurrentTrails(trailIds);
+            return that.build();
+        };
+
+        return that;
     };
 
     return {
-        buildForTrailhead: _buildForTrailhead,
-        removeFrom: _removeFrom,
-        clear: _clear
-    }
+        create: _create
+    };
 })();
 
 module.exports = trailSegmentsLayer;

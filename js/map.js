@@ -2,14 +2,22 @@
 var L = require('leaflet');
 var Config = require('./config.js');
 var trailData = require('./trailData.js');
-var trailHeads = require('./trailHeads.js');
+var trailHeadsFeature = require('./trailHeadsFeature.js');
 var trailHeadsLayer = require('./trailHeadsLayer.js');
-var trailSegments = require('./trailSegments.js');
+var trailSegmentsFeature = require('./trailSegmentsFeature.js');
 var trailSegmentsLayer = require('./trailSegmentsLayer.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
+  var thLayer = trailHeadsLayer.create();
+  var tsLayer = trailSegmentsLayer.create();
+  var tHeads = trailHeadsFeature.create();
+  var tSegments = trailSegmentsFeature.create();
+
+  thLayer.setOpenTrailFeature(tHeads);
+  tsLayer.setTrailHeads(tHeads);
+  tsLayer.setTrailSegments(tSegments);
 
   map.removeControl(map.zoomControl);
   map.addControl(L.control.zoom({position: 'topright'}));
@@ -24,12 +32,12 @@ var trailMap = (function (){
 
 
   function removeTrails() {
-    trailSegmentsLayer.removeFrom(map);
-    trailSegmentsLayer.clear();
+    tsLayer.removeFrom(map);
+    tsLayer.clear();
   }
 
   function addTrailsForTrailhead(markerLayer, trailheadId) {
-    var layers = trailSegmentsLayer.buildForTrailhead(trailheadId);
+    var layers = tsLayer.buildForTrailhead(trailheadId);
 
     if (layers.length == 0) {
       var popup = L.popup()
@@ -51,26 +59,26 @@ var trailMap = (function (){
     addTrailsForTrailhead(markerLayer, feature.properties.id);
   }
 
-  var _clearTrailheads = function () {
-    trailHeadsLayer.removeFrom(map);
-  };
-
   var _buildTrailheads = function(geoJson) {
-    _clearTrailheads();
-    trailHeads.updateGeoJson(geoJson);
-    map.addLayer(trailHeadsLayer.build());
+    thLayer.removeFrom(map);
+    tHeads.updateGeoJson(geoJson);
+    var layers = thLayer.build();
+    for (var i in layers) {
+      map.addLayer(layers[i]);
+    }
   };
 
   var _addTrailSegmentsData = function(geoJson) {
-    trailSegments.updateGeoJson(geoJson.features);
+    tSegments.updateGeoJson(geoJson.features);
   };
 
   var _addTrailNames = function(geoJson) {
-    trailSegments.addTrailNames(geoJson.features);
+    tSegments.addTrailNames(geoJson.features);
   };
 
   var _fetchTrailheads = function () {
-    _clearTrailheads();
+    thLayer.removeFrom(map);
+    thLayer.clear();
     trailData.fetchTrailheads(_buildTrailheads);
     trailData.fetchTrailSegments(_addTrailSegmentsData);
     trailData.fetchTrailNames(_addTrailNames);
@@ -78,13 +86,17 @@ var trailMap = (function (){
 
   var _filterTrailheads = function(text) {
     removeTrails();
-    _clearTrailheads();
-    trailHeadsLayer.clearFilters();
-    trailHeadsLayer.addFilter(text);
-    map.addLayer(trailHeadsLayer.build());
+    thLayer.removeFrom(map);
+    thLayer.clearFilters();
+    thLayer.clear();
+    thLayer.addFilter(text);
+    var layers = thLayer.build();
+    for (var i in layers) {
+      map.addLayer(layers[i]);
+    }
   };
 
-  trailHeadsLayer.setClickHandler(showTrails);
+  thLayer.setClickHandler(showTrails);
 
   return {
     fetchTrailheads: _fetchTrailheads,
