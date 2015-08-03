@@ -96,11 +96,16 @@ var trailMap = (function (){
     }
   };
 
+  var _clearFilters = function() {
+    _filterTrailheads('');
+  };
+
   thLayer.setClickHandler(showTrails);
 
   return {
     fetchTrailheads: _fetchTrailheads,
-    filterTrailheads: _filterTrailheads
+    filterTrailheads: _filterTrailheads,
+    clearFilters: _clearFilters,
   }
 })();
 
