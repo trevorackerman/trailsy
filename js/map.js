@@ -6,6 +6,8 @@ var trailHeadsFeature = require('./trailHeadsFeature.js');
 var trailHeadsLayer = require('./trailHeadsLayer.js');
 var trailSegmentsFeature = require('./trailSegmentsFeature.js');
 var trailSegmentsLayer = require('./trailSegmentsLayer.js');
+var trailSegmentsFilter = require('./trailSegmentsFilter.js');
+var geoJsonFilter = require('./geoJsonFilter.js');
 
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
@@ -14,6 +16,7 @@ var trailMap = (function (){
   var tsLayer = trailSegmentsLayer.create();
   var tHeads = trailHeadsFeature.create();
   var tSegments = trailSegmentsFeature.create();
+  var tSegmentsFilter = trailSegmentsFilter.create();
 
   thLayer.setOpenTrailFeature(tHeads);
   tsLayer.setTrailHeads(tHeads);
@@ -36,36 +39,19 @@ var trailMap = (function (){
     tsLayer.clear();
   }
 
-  function addTrailsForTrailhead(markerLayer, trailheadId) {
-    var layers = tsLayer.buildForTrailhead(trailheadId);
-
-    if (layers.length == 0) {
-      var popup = L.popup()
-          .setLatLng(markerLayer.getLatLng())
-          .setContent('<p>Busy retrieving trails for ' + markerLayer.feature.properties.name + '<br />Click again in a few seconds.</p>')
-          .openOn(map);
-      return;
-    }
-
-    for (var i in layers) {
-      map.addLayer(layers[i]);
-    }
-  }
-
   function showTrails(e) {
     removeTrails();
     var markerLayer = e.target;
-    var feature = markerLayer.feature;
-    addTrailsForTrailhead(markerLayer, feature.properties.id);
-  }
-
-  var _buildTrailheads = function(geoJson) {
-    thLayer.removeFrom(map);
-    tHeads.updateGeoJson(geoJson);
-    var layers = thLayer.build();
+    tSegmentsFilter.setCurrentTrailHead(markerLayer.feature);
+    tsLayer.setFilter(tSegmentsFilter.filterByTrailhead);
+    var layers = tsLayer.build();
     for (var i in layers) {
       map.addLayer(layers[i]);
     }
+  }
+
+  var _unfilter = function(feature, layer) {
+    return true;
   };
 
   var _addTrailSegmentsData = function(geoJson) {
@@ -84,20 +70,38 @@ var trailMap = (function (){
     trailData.fetchTrailNames(_addTrailNames);
   };
 
-  var _filterTrailheads = function(text) {
-    removeTrails();
-    thLayer.removeFrom(map);
-    thLayer.clearFilters();
-    thLayer.clear();
-    thLayer.addFilter(text);
+  var _buildTrailheadLayers = function() {
     var layers = thLayer.build();
     for (var i in layers) {
       map.addLayer(layers[i]);
     }
   };
 
+  var _buildTrailheads = function(geoJson) {
+    thLayer.removeFrom(map);
+    tHeads.updateGeoJson(geoJson);
+    _buildTrailheadLayers();
+  };
+
+  var _filterTrailheads = function(text) {
+    removeTrails();
+    thLayer.removeFrom(map);
+    thLayer.clear();
+
+    var filter = geoJsonFilter.create();
+    filter.setCurrentValue(text);
+    thLayer.setFilter(filter.byName);
+
+    _buildTrailheadLayers();
+  };
+
   var _clearFilters = function() {
-    _filterTrailheads('');
+    removeTrails();
+    thLayer.removeFrom(map);
+    thLayer.setFilter(_unfilter);
+    thLayer.clear();
+
+    _buildTrailheadLayers();
   };
 
   thLayer.setClickHandler(showTrails);
@@ -105,7 +109,7 @@ var trailMap = (function (){
   return {
     fetchTrailheads: _fetchTrailheads,
     filterTrailheads: _filterTrailheads,
-    clearFilters: _clearFilters,
+    clearFilters: _clearFilters
   }
 })();
 

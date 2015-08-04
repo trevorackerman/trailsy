@@ -5,40 +5,23 @@ var openTrailFeature = require('./openTrailFeature.js');
 var trailSegmentsFeature = (function () {
     var _create = function() {
         var geoJsonMap = {};
-        var allSegments = [];
+        var segmentCollections = [];
         var currentTrailIds = [];
 
         var that = openTrailFeature.create();
 
         that.updateGeoJson = function(data) {
-            allSegments = allSegments.concat(data);
-            _updateGeoJsonMap(allSegments);
+            segmentCollections.push({features: data});
+            _updateGeoJsonMap(segmentCollections);
         };
 
         that.getGeoJson = function() {
-            var segments = [];
-            for (var i in currentTrailIds) {
-                segments = segments.concat(that.getSegmentsForTrail(currentTrailIds[i]));
-            }
-
-            return segments;
+            return segmentCollections;
         };
 
         that.clear = function () {
             geoJsonMap = {};
-            allSegments.length = 0;
-        };
-
-        that.getSegmentsForTrail = function (trailId) {
-            if (geoJsonMap[trailId] == null || geoJsonMap[trailId].features == null) {
-                return [];
-            }
-            return geoJsonMap[trailId];
-        };
-
-        that.setCurrentTrails = function(trailIds) {
-            currentTrailIds.length = 0;
-            currentTrailIds = currentTrailIds.concat(trailIds);
+            segmentCollections.length = 0;
         };
 
         var getMapEntry = function(trailId) {
@@ -91,21 +74,26 @@ var trailSegmentsFeature = (function () {
             }
         };
 
-        var _updateGeoJsonMap = function(segments) {
-            for (var i in segments) {
-                var segment = segments[i];
-                var trailIds = segment.properties.trail_ids;
+        var _updateGeoJsonMap = function(segmentCollections) {
+            for (var i in segmentCollections) {
+                var segments = segmentCollections[i].features;
 
-                for (var j in trailIds) {
-                    var trailId = trailIds[j];
-                    var mapEntry = getMapEntry(trailId);
+                for (var j in segments) {
+                    var segment = segments[j];
+                    var trailIds = segment.properties.trail_ids;
 
-                    if (mapEntry.name != null) {
-                        _addTrailName(segment, mapEntry.name);
+                    for (var k in trailIds) {
+                        var trailId = trailIds[k];
+                        var mapEntry = getMapEntry(trailId);
+
+                        if (mapEntry.name != null) {
+                            _addTrailName(segment, mapEntry.name);
+                        }
+
+                        mapEntry.features.push(segment);
                     }
-
-                    mapEntry.features.push(segment);
                 }
+
             }
         };
 

@@ -6,6 +6,9 @@ var trailSegmentsLayer = (function() {
     var _create = function() {
         var spec = {
             layerOptions: {
+                filter: function(feature, layer) {
+                    return false;
+                },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup("<h5>" + feature.properties.trailNames + "</h5>");
                 },

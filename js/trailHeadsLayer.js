@@ -1,7 +1,6 @@
 "use strict";
 var L = require('leaflet');
 var openTrailLayer = require('./openTrailLayer.js');
-var geoJson = require('./geoJson.js');
 
 var trailHeadsLayer = (function (){
     var _create = function() {
@@ -41,19 +40,6 @@ var trailHeadsLayer = (function (){
 
         that.setClickHandler = function(handler) {
             that.clickHandler = handler;
-        };
-
-        that.addFilter = function(text) {
-            spec.layerOptions.filter = function (feature, layer) {
-                return geoJson.filterByName(feature, text);
-                //return (feature.properties.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
-            }
-        };
-
-        that.clearFilters = function() {
-            spec.layerOptions.filter = function (feature, layer) {
-                return true;
-            }
         };
 
         var _getTrailheadAmenities = function(trailhead) {

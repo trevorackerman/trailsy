@@ -38,6 +38,10 @@ var openTrailLayer = (function() {
             openTrailFeature = feature;
         };
 
+        that.setFilter = function(filter) {
+            spec.layerOptions.filter = filter;
+        };
+
         return that;
     };
 
