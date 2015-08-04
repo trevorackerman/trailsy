@@ -39,15 +39,19 @@ var trailMap = (function (){
     tsLayer.clear();
   }
 
+  function buildTrailSegments() {
+    var layers = tsLayer.build();
+    for (var i in layers) {
+      map.addLayer(layers[i]);
+    }
+  }
+
   function showTrails(e) {
     removeTrails();
     var markerLayer = e.target;
     tSegmentsFilter.setCurrentTrailHead(markerLayer.feature);
     tsLayer.setFilter(tSegmentsFilter.filterByTrailhead);
-    var layers = tsLayer.build();
-    for (var i in layers) {
-      map.addLayer(layers[i]);
-    }
+    buildTrailSegments();
   }
 
   var _unfilter = function(feature, layer) {
@@ -92,7 +96,13 @@ var trailMap = (function (){
     filter.setCurrentValue(text);
     thLayer.setFilter(filter.byName);
 
+    var filter2 = geoJsonFilter.create();
+    filter2.setCurrentValue(text);
+    filter2.setCurrentKey("trailNames");
+    tsLayer.setFilter(filter2.byProperty);
+
     _buildTrailheadLayers();
+    buildTrailSegments();
   };
 
   var _clearFilters = function() {
