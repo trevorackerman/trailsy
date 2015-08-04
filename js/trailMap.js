@@ -9,7 +9,9 @@ var trailSegmentsLayer = require('./trailSegmentsLayer.js');
 var trailSegmentsFilter = require('./trailSegmentsFilter.js');
 var geoJsonFilter = require('./geoJsonFilter.js');
 
-var trailMap = (function (){
+var trailMap = function() {
+  var that = {};
+
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
   var thLayer = trailHeadsLayer();
@@ -17,8 +19,10 @@ var trailMap = (function (){
   var tHeads = trailHeadsFeature();
   var tSegments = trailSegmentsFeature();
   var tSegmentsFilter = trailSegmentsFilter();
+  var tData = trailData();
 
   thLayer.setOpenTrailFeature(tHeads);
+
   tsLayer.setTrailHeads(tHeads);
   tsLayer.setTrailSegments(tSegments);
 
@@ -33,62 +37,16 @@ var trailMap = (function (){
     id: 'examples.map-i875mjb7'
   }).addTo(map);
 
-
-  function removeTrails() {
-    tsLayer.removeFrom(map);
-    tsLayer.clear();
-  }
-
-  function buildTrailSegments() {
-    var layers = tsLayer.build();
-    for (var i in layers) {
-      map.addLayer(layers[i]);
-    }
-  }
-
-  function showTrails(e) {
-    removeTrails();
-    var markerLayer = e.target;
-    tSegmentsFilter.setCurrentTrailHead(markerLayer.feature);
-    tsLayer.setFilter(tSegmentsFilter.filterByTrailhead);
-    buildTrailSegments();
-  }
-
-  var _unfilter = function(feature, layer) {
-    return true;
-  };
-
-  var _addTrailSegmentsData = function(geoJson) {
-    tSegments.updateGeoJson(geoJson.features);
-  };
-
-  var _addTrailNames = function(geoJson) {
-    tSegments.addTrailNames(geoJson.features);
-  };
-
-  var _fetchTrailheads = function () {
+  that.fetchTrailheads = function () {
     thLayer.removeFrom(map);
     thLayer.clear();
-    trailData.fetchTrailheads(_buildTrailheads);
-    trailData.fetchTrailSegments(_addTrailSegmentsData);
-    trailData.fetchTrailNames(_addTrailNames);
+    tData.fetchTrailheads(_buildTrailheads);
+    tData.fetchTrailSegments(_addTrailSegmentsData);
+    tData.fetchTrailNames(_addTrailNames);
   };
 
-  var _buildTrailheadLayers = function() {
-    var layers = thLayer.build();
-    for (var i in layers) {
-      map.addLayer(layers[i]);
-    }
-  };
-
-  var _buildTrailheads = function(geoJson) {
-    thLayer.removeFrom(map);
-    tHeads.updateGeoJson(geoJson);
-    _buildTrailheadLayers();
-  };
-
-  var _filterTrailheads = function(text) {
-    removeTrails();
+  that.filterTrailheads = function (text) {
+    _removeTrails();
     thLayer.removeFrom(map);
     thLayer.clear();
 
@@ -102,11 +60,11 @@ var trailMap = (function (){
     tsLayer.setFilter(filter2.byProperty);
 
     _buildTrailheadLayers();
-    buildTrailSegments();
+    _buildTrailSegments();
   };
 
-  var _clearFilters = function() {
-    removeTrails();
+  that.clearFilters = function () {
+    _removeTrails();
     thLayer.removeFrom(map);
     thLayer.setFilter(_unfilter);
     thLayer.clear();
@@ -114,13 +72,55 @@ var trailMap = (function (){
     _buildTrailheadLayers();
   };
 
-  thLayer.setClickHandler(showTrails);
+  that.showTrails = function (e) {
+    _removeTrails();
+    var markerLayer = e.target;
+    tSegmentsFilter.setCurrentTrailHead(markerLayer.feature);
+    tsLayer.setFilter(tSegmentsFilter.filterByTrailhead);
+    _buildTrailSegments();
+  };
 
-  return {
-    fetchTrailheads: _fetchTrailheads,
-    filterTrailheads: _filterTrailheads,
-    clearFilters: _clearFilters
+  thLayer.setClickHandler(that.showTrails);
+
+  function _removeTrails() {
+    tsLayer.removeFrom(map);
+    tsLayer.clear();
   }
-})();
+
+  function _buildTrailSegments() {
+    var layers = tsLayer.build();
+    for (var i in layers) {
+      map.addLayer(layers[i]);
+    }
+  }
+
+  function _unfilter (feature, layer) {
+    return true;
+  }
+
+  function _addTrailSegmentsData (geoJson) {
+    tSegments.updateGeoJson(geoJson.features);
+  }
+
+  function _addTrailNames (geoJson) {
+    tSegments.addTrailNames(geoJson.features);
+  }
+
+
+  function _buildTrailheadLayers () {
+    var layers = thLayer.build();
+    for (var i in layers) {
+      map.addLayer(layers[i]);
+    }
+  }
+
+  function _buildTrailheads (geoJson) {
+    thLayer.removeFrom(map);
+    tHeads.updateGeoJson(geoJson);
+    _buildTrailheadLayers();
+  }
+
+  return that;
+};
 
 module.exports = trailMap;

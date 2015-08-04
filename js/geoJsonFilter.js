@@ -1,6 +1,6 @@
 "use strict";
 
-var geoJsonFilter =  function() {
+var geoJsonFilter = function() {
     var that = {};
 
     var currentValue;
