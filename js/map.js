@@ -12,11 +12,11 @@ var geoJsonFilter = require('./geoJsonFilter.js');
 var trailMap = (function (){
   var elementId = 'trailMapLarge';
   var map = L.map(elementId).setView(Config.mapCenter, Config.defaultZoom);
-  var thLayer = trailHeadsLayer.create();
-  var tsLayer = trailSegmentsLayer.create();
-  var tHeads = trailHeadsFeature.create();
-  var tSegments = trailSegmentsFeature.create();
-  var tSegmentsFilter = trailSegmentsFilter.create();
+  var thLayer = trailHeadsLayer();
+  var tsLayer = trailSegmentsLayer();
+  var tHeads = trailHeadsFeature();
+  var tSegments = trailSegmentsFeature();
+  var tSegmentsFilter = trailSegmentsFilter();
 
   thLayer.setOpenTrailFeature(tHeads);
   tsLayer.setTrailHeads(tHeads);
@@ -92,11 +92,11 @@ var trailMap = (function (){
     thLayer.removeFrom(map);
     thLayer.clear();
 
-    var filter = geoJsonFilter.create();
+    var filter = geoJsonFilter();
     filter.setCurrentValue(text);
     thLayer.setFilter(filter.byName);
 
-    var filter2 = geoJsonFilter.create();
+    var filter2 = geoJsonFilter();
     filter2.setCurrentValue(text);
     filter2.setCurrentKey("trailNames");
     tsLayer.setFilter(filter2.byProperty);
