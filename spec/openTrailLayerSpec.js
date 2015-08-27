@@ -25,7 +25,6 @@ describe('openTrailLayer', function () {
         expect(layers.length).toBe(0);
         expect(ourTrailFeature.getGeoJson).toHaveBeenCalled();
         expect(spec.L.geoJson.calls.count()).toEqual(0);
-
     });
 
     it('should build layers from the openTrailFeature geoJson data', function () {

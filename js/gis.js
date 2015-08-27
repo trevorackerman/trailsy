@@ -7,7 +7,9 @@ var gis = function (spec) {
         return x * Math.PI / 180;
     }
 
-    that.haversineDistance = function (coordinatesA, coordinatesB) {
+    that.haversineDistance = function (coordinatesA, coordinatesB, debug) {
+        debug = debug || false;
+
         var longitudeA = coordinatesA[0];
         var latitudeA = coordinatesA[1];
         var longitudeB = coordinatesB[0];
@@ -24,19 +26,27 @@ var gis = function (spec) {
 
         // meters
         var d = 6371 * 1000 * c;
+        if (debug) {
+            //console.log("distance between " + longitudeA + "," + latitudeA + " and " + longitudeB + "," + latitudeB + " is " + d);
+        }
+
         return d;
     };
 
-    that.pathDistance = function (coordinatesArray) {
+    that.pathDistance = function (coordinatesArray, debug) {
+        debug = debug || false;
+
         var distance = 0;
         var s = "";
         for (var i = 0; i < coordinatesArray.length - 1; i++) {
-            var tmp = that.haversineDistance(coordinatesArray[i], coordinatesArray[i + 1]);
+            var tmp = that.haversineDistance(coordinatesArray[i], coordinatesArray[i + 1], debug);
             s += " " + tmp.toFixed(0);
             distance += tmp;
         }
         s += " = " + distance;
-        console.log(s);
+        if (debug) {
+            //console.log(s);
+        }
         return distance;
     };
 

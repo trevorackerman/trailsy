@@ -38,6 +38,8 @@ var trailMap = function() {
     accessToken: 'pk.eyJ1IjoidHJldm9yYWNrZXJtYW4iLCJhIjoiMjM0NWIwNWRkMTBlM2Y0MmMyYmZiNzIwZjk2ZTVhMmYifQ.BhzAYibXfiqRHkRdNKKmGQ'
   }).addTo(map);
 
+  L.control.scale({maxWidth:500}).addTo(map);
+
   that.fetchTrailheads = function () {
     thLayer.removeFrom(map);
     thLayer.clear();
