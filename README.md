@@ -120,7 +120,8 @@ This project is licensed under a BSD 3-clause license, which can be found [here]
 
 
 #### Acknowledgements
-This 
+This project would not be possible without the support of the Boulder County Parks and Open Space department and Trailhead Labs. *Thank you!*
+ 
 #### Credits
 ---
 The team includes
