@@ -1,6 +1,8 @@
 Trailsy
 =======
 
+![alt text](https://github.com/CodeForBoulder/trailsy/blob/master/img/logo-bc.png "Trailsy")
+
 This version of Trailsy is a Code for Boulder project that uses [OuterSpatial](http://outerspatial.com) API calls to
 retrieve OpenTrails data. 
 
