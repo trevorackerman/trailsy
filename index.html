@@ -11,13 +11,11 @@
     <link rel="icon" type="image/ico" href="img/AppIcons/favicon.ico">
     <title>Trailsy</title>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="styles/css/cover.css">
+    <link rel="stylesheet" href="http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css">
     <link rel="stylesheet" href="styles/css/trailsy.css"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -27,15 +25,8 @@
     <![endif]-->
 </head>
 <body>
-<div id="trailMapLarge" class="site-wrapper trailhead-bg">
-    <div class="site-wrapper-inner">
-        <div id="twitter-feed">
-            <a class="twitter-timeline" href="https://twitter.com/mbarrenecheajr/lists/trailsy" data-chrome="noheader noscrollbar" data-widget-id="646503043454799872"></a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>    
-        </div>
-
-        <div class="cover-container">
-            <div class="masthead">
+<nav class="navbar navbar-inverse navbar-fixed-top brown-bg" role="navigation">
+    <div class="masthead">
                 <span class="trailsy-brand">
                     <span>TO THE</span>
                     <span class="fancy-serif">TRAILS</span>
@@ -43,7 +34,7 @@
                 <span>
                     <span id="triangle-right"></span>
                 </span>
-                <span class="trailsy-brand-inverse">Boulder County</span>
+        <span class="trailsy-brand-inverse">Boulder County</span>
                 <span class="navbar-form">
                     <div class="btn-group">
                         <button type="button" class="btn btn-success">Find by Length</button>
@@ -68,16 +59,21 @@
                         </span>
                     </div>
                 </span>
-            </div>
-            <div class="inner cover">
-            </div>
+    </div>
+</nav>
+
+<div id="container" class="row brown-bg">
+    <div class="col-lg-2">
+        <div id="twitter-feed">
+            <a class="twitter-timeline" height="1000" style="overflow:hidden;" href="https://twitter.com/mbarrenecheajr/lists/trailsy" data-chrome="noheader noscrollbar" data-widget-id="646503043454799872"></a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
         </div>
     </div>
+    <div class="col-lg-10" id="trailMapLarge"/>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="bundle.js"></script>
-
 </body>
 </html>

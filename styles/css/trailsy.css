@@ -160,9 +160,25 @@
 }
 
 #twitter-feed {
-    width:200px;
     position:fixed;
-    top:70px;
-    left:25px;
     z-index:2000;
+    width: 15.75%;
+}
+
+html, body, #container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#container {
+    margin-top: 50px;
+}
+
+#trailMapLarge {
+    height: 100%;
+}
+
+.brown-bg {
+    background-color: #523d32;
 }
